@@ -1,0 +1,17 @@
+citHeader("To cite 'athletemonitoring' in publications use:")
+
+citEntry(entry = "Manual",
+  title        = "{athletemonitoring}: Athlete Monitoring Data Analysis and Visualization",
+  author       = personList(as.person("Mladen Jovanovic")),
+  note         = "R package version 0.0.0.9000",
+  year         = "2020",
+  url          = "mladenjovanovic.github.io/athletemonitoring",
+  doi          = "",
+
+  textVersion  =
+  paste("Mladen Jovanović (2020).",
+        "athletemonitoring: Athlete Monitoring Data Analysis and Visualization.",
+        "R package version 0.0.0.9000.",
+        "url: mladenjovanovic.github.io/athletemonitoring.",
+        "doi: ")
+)

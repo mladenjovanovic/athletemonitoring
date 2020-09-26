@@ -1,16 +1,22 @@
 Package: athletemonitoring
-Title: What the Package Does (One Line, Title Case)
+Title: Athlete Monitoring Data Analysis and Visualization
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Mladen",
+           family = "Jovanović",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+           email = "coach.mladen.jovanovic@gmail.com",
+           comment = c(website = "complementarytraining.net"))
+Description: Athlete monitoring data often comes in a form of 
+    time series or panel data. This package helps in preparing
+    these types of datasets using contemporary best practices
+    which involve dealing with missing values, aggregating 
+    data on a day-level, creating rolling averages and
+    finally providing visualizations.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Depends: 
+    R (>= 2.10)
