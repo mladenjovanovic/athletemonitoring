@@ -26,3 +26,5 @@ Imports:
     tidyr,
     magrittr,
     zoo
+URL:  https://github.com/mladenjovanovic/athletemonitoring
+BugReports: https://github.com/mladenjovanovic/athletemonitoring/issues
