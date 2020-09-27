@@ -3,7 +3,7 @@
 #' @param data Data frame
 #' @param athlete Name of the column in the \code{data} where the athlete id or name is located
 #' @param date Name of the column in the \code{data} where the date is located. \code{date} has
-#'     to be of \code{Date} class
+#'     to be either \code{Date} or \code{numeric} class
 #' @param variable Name of the column in the \code{data} where the variable name is located
 #' @param value Name of the column in the \code{data} where the value of \code{variable} is located
 #' @param day_aggregate Function for aggregating multiple day entries. Defaults is \code{sum}
@@ -97,7 +97,11 @@ prepare <- function(data,
   stop_date <- max(data$date)
 
   # Create a sequence of day
-  date_seq <- seq(start_date, stop_date, "days")
+  if (is.numeric(data$date)) {
+    date_seq <- seq(start_date, stop_date)
+  } else {
+    date_seq <- seq(start_date, stop_date, "days")
+  }
 
   # Generate a continuous df so that there are no missing days for every athlete
   data <- merge(
@@ -206,3 +210,4 @@ prepare <- function(data,
     )
   )
 }
+
