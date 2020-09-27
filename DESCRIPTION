@@ -25,6 +25,11 @@ Imports:
     dplyr,
     tidyr,
     magrittr,
-    zoo
+    zoo,
+    ggplot2
+Suggests:
+    sparkline,
+    formattable,
+    htmlwidgets
 URL:  https://github.com/mladenjovanovic/athletemonitoring
 BugReports: https://github.com/mladenjovanovic/athletemonitoring/issues
