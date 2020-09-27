@@ -31,7 +31,7 @@ prepare(
 \item{athlete}{Name of the column in the \code{data} where the athlete id or name is located}
 
 \item{date}{Name of the column in the \code{data} where the date is located. \code{date} has
-to be of \code{Date} class}
+to be either \code{Date} or \code{numeric} class}
 
 \item{variable}{Name of the column in the \code{data} where the variable name is located}
 
