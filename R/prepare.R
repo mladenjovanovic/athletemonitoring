@@ -150,8 +150,7 @@ prepare <- function(data,
     dplyr::select(-start_date, -stop_date) %>%
 
     # Fill in missing days
-    # create new column, so we can see where the data is missing afterwards in the column value
-    dplyr::mutate(impute = ifelse(is.na(value), NA_day, value)) %>%
+    dplyr::mutate(value = ifelse(is.na(value), NA_day, value)) %>%
 
     # Generate rolling estimators
     dplyr::arrange(date) %>%
