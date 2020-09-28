@@ -31,5 +31,7 @@ Suggests:
     sparkline,
     formattable,
     htmlwidgets
-URL:  https://github.com/mladenjovanovic/athletemonitoring
+URL:
+    https://github.com/mladenjovanovic/athletemonitoring
+    https://mladenjovanovic.github.io/athletemonitoring/
 BugReports: https://github.com/mladenjovanovic/athletemonitoring/issues
