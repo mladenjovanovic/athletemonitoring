@@ -45,7 +45,7 @@ to be either \code{Date} or \code{numeric} class}
 
 \item{acute}{Duration of the acute rolling window. Default is 7}
 
-\item{chronic}{Duration of the chronic rolling window. Default is 7}
+\item{chronic}{Duration of the chronic rolling window. Default is 28}
 
 \item{rolling_fill}{Value used to fill start of the rolling windows. Default is \code{NA}}
 

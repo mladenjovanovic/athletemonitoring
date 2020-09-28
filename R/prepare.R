@@ -10,7 +10,7 @@
 #' @param NA_session What value should be imputed for missing values in \code{value}? Default is \code{NA}
 #' @param NA_day What value should be imputed for missing days? Default is \code{NA}
 #' @param acute Duration of the acute rolling window. Default is 7
-#' @param chronic Duration of the chronic rolling window. Default is 7
+#' @param chronic Duration of the chronic rolling window. Default is 28
 #' @param rolling_fill Value used to fill start of the rolling windows. Default is \code{NA}
 #' @param rolling_estimators Function providing rolling estimators. See Details
 #' @param posthoc_estimators Function providing post-hoc estimators. See Details
