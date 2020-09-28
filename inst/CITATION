@@ -6,12 +6,12 @@ citEntry(entry = "Manual",
   note         = "R package version 0.0.0.9000",
   year         = "2020",
   url          = "mladenjovanovic.github.io/athletemonitoring",
-  doi          = "",
+  doi          = "10.5281/zenodo.4056814",
 
   textVersion  =
   paste("Mladen Jovanović (2020).",
         "athletemonitoring: Athlete Monitoring Data Analysis and Visualization.",
         "R package version 0.0.0.9000.",
         "url: mladenjovanovic.github.io/athletemonitoring.",
-        "doi: ")
+        "doi: 10.5281/zenodo.4056814.")
 )
