@@ -274,9 +274,8 @@ plot_athletemonitoring_table <- function(object,
       historical = as.character(htmltools::as.tags(
         sparkline::sparkline(value,
           type = "line",
-          barColor = "grey",
           lineColor = "black",
-          fillColor = "transparent",
+          fillColor = "lightgrey",
           lineWidth = 3,
           spotRadius = 3
         )
