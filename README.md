@@ -5,6 +5,9 @@
 
 <!-- badges: start -->
 
+[![DOI](https://zenodo.org/badge/298780725.svg)](https://zenodo.org/badge/latestdoi/298780725)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/athletemonitoring)](https://CRAN.R-project.org/package=athletemonitoring)
 <!-- badges: end -->
 
 Athlete monitoring data often comes in a form of time series or panel
