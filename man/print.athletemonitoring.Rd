@@ -29,12 +29,22 @@ prepared_data <- prepare(
   data = monitoring,
   athlete = "Full Name",
   date = "Date",
- variable = "Variable",
+  variable = "Variable",
   value = "Value",
   acute = 7,
   chronic = 42,
 
+  # How should be missing entry treated?
+  # What do we assume? Zero load? Let's keep NA
+  NA_session =  NA,
+
+  # How should missing days (i.e. no entries) be treated?
+  # Here we assume no training, hence zero
+  NA_day = 0,
+
   # How should be multiple day entries summarised?
+  # With "load", it is a "sum", witho other metrics that
+  # do not aggregate, it can me "mean"
   day_aggregate = function(x) {
     sum(x, na.rm = TRUE)
   },

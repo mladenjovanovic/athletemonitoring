@@ -155,12 +155,22 @@
   data <span class='op'>=</span> <span class='va'>monitoring</span>,
   athlete <span class='op'>=</span> <span class='st'>"Full Name"</span>,
   date <span class='op'>=</span> <span class='st'>"Date"</span>,
- variable <span class='op'>=</span> <span class='st'>"Variable"</span>,
+  variable <span class='op'>=</span> <span class='st'>"Variable"</span>,
   value <span class='op'>=</span> <span class='st'>"Value"</span>,
   acute <span class='op'>=</span> <span class='fl'>7</span>,
   chronic <span class='op'>=</span> <span class='fl'>42</span>,
 
+  <span class='co'># How should be missing entry treated?</span>
+  <span class='co'># What do we assume? Zero load? Let's keep NA</span>
+  NA_session <span class='op'>=</span>  <span class='cn'>NA</span>,
+
+  <span class='co'># How should missing days (i.e. no entries) be treated?</span>
+  <span class='co'># Here we assume no training, hence zero</span>
+  NA_day <span class='op'>=</span> <span class='fl'>0</span>,
+
   <span class='co'># How should be multiple day entries summarised?</span>
+  <span class='co'># With "load", it is a "sum", witho other metrics that</span>
+  <span class='co'># do not aggregate, it can me "mean"</span>
   day_aggregate <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>{</span>
     <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>x</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
   <span class='op'>}</span>,
@@ -212,16 +222,16 @@
 </div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 10 x 13</span><span>
 #&gt;    athlete variable `Day entries` Missing `Start date` `Stop date`  Mean    SD
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span> Alan M… Trainin…           312      51 2020-01-02   2020-12-29  202.  133. 
-#&gt; </span><span style='color: #555555;'> 2</span><span> Ann Wh… Trainin…           312      51 2020-01-02   2020-12-29  353.  247. 
-#&gt; </span><span style='color: #555555;'> 3</span><span> Eve Bl… Trainin…           312      51 2020-01-02   2020-12-29  401.  257. 
-#&gt; </span><span style='color: #555555;'> 4</span><span> Frank … Trainin…           312      51 2020-01-02   2020-12-29  218.  155. 
-#&gt; </span><span style='color: #555555;'> 5</span><span> John D… Trainin…           312      51 2020-01-02   2020-12-29  272.  207. 
-#&gt; </span><span style='color: #555555;'> 6</span><span> Michae… Trainin…           312      51 2020-01-02   2020-12-29  177.  167. 
-#&gt; </span><span style='color: #555555;'> 7</span><span> Mike S… Trainin…           312      51 2020-01-02   2020-12-29  514.  344. 
-#&gt; </span><span style='color: #555555;'> 8</span><span> Peter … Trainin…           312      51 2020-01-02   2020-12-29  470.  330. 
-#&gt; </span><span style='color: #555555;'> 9</span><span> Stuart… Trainin…           312      51 2020-01-02   2020-12-29  177.  122. 
-#&gt; </span><span style='color: #555555;'>10</span><span> Susan … Trainin…           312      51 2020-01-02   2020-12-29   87.6  68.8
+#&gt; </span><span style='color: #555555;'> 1</span><span> Alan M… Trainin…           363       0 2020-01-02   2020-12-29  174.  142. 
+#&gt; </span><span style='color: #555555;'> 2</span><span> Ann Wh… Trainin…           363       0 2020-01-02   2020-12-29  303.  260. 
+#&gt; </span><span style='color: #555555;'> 3</span><span> Eve Bl… Trainin…           363       0 2020-01-02   2020-12-29  344.  276. 
+#&gt; </span><span style='color: #555555;'> 4</span><span> Frank … Trainin…           363       0 2020-01-02   2020-12-29  188.  162. 
+#&gt; </span><span style='color: #555555;'> 5</span><span> John D… Trainin…           363       0 2020-01-02   2020-12-29  234.  214. 
+#&gt; </span><span style='color: #555555;'> 6</span><span> Michae… Trainin…           363       0 2020-01-02   2020-12-29  152.  167. 
+#&gt; </span><span style='color: #555555;'> 7</span><span> Mike S… Trainin…           363       0 2020-01-02   2020-12-29  442.  365. 
+#&gt; </span><span style='color: #555555;'> 8</span><span> Peter … Trainin…           363       0 2020-01-02   2020-12-29  404.  346. 
+#&gt; </span><span style='color: #555555;'> 9</span><span> Stuart… Trainin…           363       0 2020-01-02   2020-12-29  152.  129. 
+#&gt; </span><span style='color: #555555;'>10</span><span> Susan … Trainin…           363       0 2020-01-02   2020-12-29   75.3  70.7
 #&gt; </span><span style='color: #555555;'># … with 5 more variables: Min </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, Max </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, Median </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, IQR </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
 #&gt; </span><span style='color: #555555;'>#   MAD </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span></div></span></pre>
   </div>

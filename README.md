@@ -58,13 +58,23 @@ prepared_data <- prepare(
   variable = "Variable",
   value = "Value",
   acute = 7,
-  chronic = 42,
-
+  chronic = 42, 
+  
+  # How should be missing entry treated? 
+  # What do we assume? Zero load? Let's keep NA
+  NA_session =  NA,
+  
+  # How should missing days (i.e. no entries) be treated?
+  # Here we assume no training, hence zero
+  NA_day = 0,
+  
   # How should be multiple day entries summarised?
+  # With "load", it is a "sum", witho other metrics that
+  # do not aggregate, it can me "mean"
   day_aggregate = function(x) {
     sum(x, na.rm = TRUE)
   },
-
+  
   # Rolling estimators for Acute and Chronic windows
   rolling_estimators = function(x) {
     c(
@@ -73,17 +83,17 @@ prepared_data <- prepare(
       "cv" = sd(x, na.rm = TRUE) / mean(x, na.rm = TRUE)
     )
   },
-
+  
   # Additional estimator post-rolling
   posthoc_estimators = function(data) {
     data$ACD <- data$acute.mean - data$chronic.mean
     data$ACR <- data$acute.mean / data$chronic.mean
     data$ES <- data$ACD / data$chronic.sd
-
+    
     # Make sure to return the data
     return(data)
   },
-
+  
   # Group summary estimators
   group_summary_estimators = function(x) {
     c(
@@ -109,20 +119,21 @@ prepared_data
 #> 
 #> 10 estimators:
 #> variable.value, acute.mean, acute.sd, acute.cv, chronic.mean, chronic.sd, chronic.cv, ACD, ACR, ES
+
 summary(prepared_data)
 #> # A tibble: 10 x 13
 #>    athlete variable `Day entries` Missing `Start date` `Stop date`  Mean    SD
 #>    <chr>   <chr>            <int>   <int> <date>       <date>      <dbl> <dbl>
-#>  1 Alan M… Trainin…           312      51 2020-01-02   2020-12-29  202.  133. 
-#>  2 Ann Wh… Trainin…           312      51 2020-01-02   2020-12-29  353.  247. 
-#>  3 Eve Bl… Trainin…           312      51 2020-01-02   2020-12-29  401.  257. 
-#>  4 Frank … Trainin…           312      51 2020-01-02   2020-12-29  218.  155. 
-#>  5 John D… Trainin…           312      51 2020-01-02   2020-12-29  272.  207. 
-#>  6 Michae… Trainin…           312      51 2020-01-02   2020-12-29  177.  167. 
-#>  7 Mike S… Trainin…           312      51 2020-01-02   2020-12-29  514.  344. 
-#>  8 Peter … Trainin…           312      51 2020-01-02   2020-12-29  470.  330. 
-#>  9 Stuart… Trainin…           312      51 2020-01-02   2020-12-29  177.  122. 
-#> 10 Susan … Trainin…           312      51 2020-01-02   2020-12-29   87.6  68.8
+#>  1 Alan M… Trainin…           363       0 2020-01-02   2020-12-29  174.  142. 
+#>  2 Ann Wh… Trainin…           363       0 2020-01-02   2020-12-29  303.  260. 
+#>  3 Eve Bl… Trainin…           363       0 2020-01-02   2020-12-29  344.  276. 
+#>  4 Frank … Trainin…           363       0 2020-01-02   2020-12-29  188.  162. 
+#>  5 John D… Trainin…           363       0 2020-01-02   2020-12-29  234.  214. 
+#>  6 Michae… Trainin…           363       0 2020-01-02   2020-12-29  152.  167. 
+#>  7 Mike S… Trainin…           363       0 2020-01-02   2020-12-29  442.  365. 
+#>  8 Peter … Trainin…           363       0 2020-01-02   2020-12-29  404.  346. 
+#>  9 Stuart… Trainin…           363       0 2020-01-02   2020-12-29  152.  129. 
+#> 10 Susan … Trainin…           363       0 2020-01-02   2020-12-29   75.3  70.7
 #> # … with 5 more variables: Min <dbl>, Max <dbl>, Median <dbl>, IQR <dbl>,
 #> #   MAD <dbl>
 
@@ -158,7 +169,6 @@ plot(
   prepared_data,
   type = "bar")
 #> Plotting average across athletes. Please select athlete or use `trellis=TRUE`
-#> Warning: Removed 6 rows containing missing values (geom_bar).
 #> Warning: Removed 42 row(s) containing missing values (geom_path).
 
 #> Warning: Removed 42 row(s) containing missing values (geom_path).
@@ -173,9 +183,7 @@ plot(
   prepared_data,
   type = "bar",
   trellis = TRUE)
-#> Warning: Removed 60 rows containing missing values (geom_bar).
 #> Warning: Removed 420 row(s) containing missing values (geom_path).
-
 #> Warning: Removed 420 row(s) containing missing values (geom_path).
 ```
 
@@ -203,7 +211,6 @@ plot(
   # Plot last n entries/days
   last_n = 42)
 #> Plotting average across athletes. Please select athlete or use `trellis=TRUE`
-#> Warning: Removed 6 rows containing missing values (geom_bar).
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-3.png" width="100%" />
@@ -218,7 +225,6 @@ plot(
   chronic_name = "chronic.mean",
   last_n = 42,
   trellis = TRUE)
-#> Warning: Removed 60 rows containing missing values (geom_bar).
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-4.png" width="100%" />
