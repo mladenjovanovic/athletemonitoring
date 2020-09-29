@@ -292,6 +292,14 @@ prepare <- function(data,
       )
     )
 
+    # Check is ammount of data in 'value' is smaller than rolling window
+    # Since zoo::rollapply will not return names estimators
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++
+    if (length(value) < acute) {
+      acute_df <- rolling_estimators(rep(rolling_fill, length(value)))
+      acute_df <- as.data.frame(t(acute_df))
+    }
+
     colnames(acute_df) <- paste0("acute.", colnames(acute_df))
 
     # Chronic
@@ -304,6 +312,14 @@ prepare <- function(data,
         align = "right"
       )
     )
+
+    # Check is ammount of data in 'value' is smaller than rolling window
+    # Since zoo::rollapply will not return names estimators
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++
+    if (length(value) < chronic) {
+      chronic_df <- rolling_estimators(rep(rolling_fill, length(value)))
+      chronic_df <- as.data.frame(t(chronic_df))
+    }
 
     colnames(chronic_df) <- paste0("chronic.", colnames(chronic_df))
 
@@ -333,7 +349,7 @@ prepare <- function(data,
   # Apply post-hoc estimators
   data <- posthoc_estimators(data)
 
-  # Create long  version
+# Create long  version
   data_long <- tidyr::pivot_longer(
     data,
     cols = -(1:3),
