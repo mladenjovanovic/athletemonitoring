@@ -166,7 +166,7 @@ plot(
   type = "bar",
   trellis = TRUE)
 
-# To filter out athletem variable and add Acute and Chronic lines to the group average:
+# To filter out athlete variable and add Acute and Chronic lines to the group average:
 plot(
   prepared_data,
   type = "bar",

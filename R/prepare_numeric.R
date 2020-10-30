@@ -1,4 +1,4 @@
-prepare_nominal <- function(data,
+prepare_numeric <- function(data,
                             athlete,
                             date,
                             variable,
@@ -15,35 +15,28 @@ prepare_nominal <- function(data,
 
   # +++++++++++++++++++++++++++++++++++++++++++
   # Code chunk for dealing with R CMD check note
-  missing_day <- NULL
-  level <- NULL
-  proportion <- NULL
   estimator <- NULL
   missing_day <- NULL
   # +++++++++++++++++++++++++++++++++++++++++++
 
-
-  # Check if factor, then save levels
-  flag_value_factor <- FALSE
-  if(is.factor(data[[value]])) {
-    flag_value_factor <- TRUE
-    levels_value_factor <- levels(data[[value]])
-  }
 
   # Extract the data
   data <- data.frame(
     athlete = data[[athlete]],
     date = data[[date]],
     variable = data[[variable]],
-    value = as.character(data[[value]]),
-    stringsAsFactors = FALSE
+    value = data[[value]]
   )
-
-  # Fill missing entries
-  data$value[is.na(data$value)] <- NA_session
 
   # ------------------------------------
   data <- data %>%
+    dplyr::group_by(athlete, date, variable) %>%
+
+    # Fill in missing sessions
+    dplyr::mutate(value = ifelse(is.na(value), NA_session, value)) %>%
+    # Aggregate to day value
+    dplyr::summarise(value = day_aggregate(value)) %>%
+
     # Get start and stop dates for every athlete and variable
     dplyr::group_by(athlete, variable) %>%
     dplyr::mutate(
@@ -73,51 +66,7 @@ prepare_nominal <- function(data,
     all = TRUE
   )
 
-  data <- data %>%
-    # fill in the individual/variable start and stop days and remove excess
-    dplyr::group_by(athlete, variable) %>%
-
-    # Arrange/Sort
-    dplyr::arrange(date) %>%
-
-    # Tag missing day
-    dplyr::mutate(missing_day = is.na(start_date)) %>%
-    tidyr::fill(start_date, stop_date, .direction = "up") %>%
-    dplyr::filter(date >= start_date & date <= stop_date) %>%
-    dplyr::select(-start_date, -stop_date) %>%
-
-    # Fill in missing days
-    dplyr::mutate(value = ifelse(missing_day, NA_day, value)) %>%
-    dplyr::select(-missing_day)
-
-
-  # Create wide version
-  data <- data %>%
-    dplyr::group_by(athlete, date, variable) %>%
-    dplyr::mutate(session = dplyr::row_number()) %>%
-    tidyr::pivot_wider(
-      id_cols = c("athlete", "date", "variable", "session"),
-      names_from = "value"
-    )
-
-  data[-(1:4)] <- ifelse(is.na(data[-(1:4)]), 0, 1)
-
-  # Aggregate on a day level
-  data <- tidyr::pivot_longer(
-    data,
-    cols = -(1:4),
-    names_to = "level"
-  ) %>%
-    dplyr::group_by(athlete, date, variable, level) %>%
-    # Aggregate to day value
-    dplyr::summarise(value = day_aggregate(value)) %>%
-
-    # Create proportion
-    dplyr::group_by(athlete, date, variable) %>%
-    dplyr::mutate(proportion = value / length(value))
-
   # Rolling function
-  # =================
   roll_func <- function(value, date) {
     # Acute
     acute_df <- data.frame(
@@ -166,17 +115,29 @@ prepare_nominal <- function(data,
   }
 
   data <- data %>%
-    dplyr::group_by(athlete, variable, level) %>%
+    # fill in the individual/variable start and stop days and remove excess
+    dplyr::group_by(athlete, variable) %>%
+
     # Arrange/Sort
     dplyr::arrange(date) %>%
+    # Tag missing day
+    dplyr::mutate(missing_day = is.na(start_date)) %>%
+
+    tidyr::fill(start_date, stop_date, .direction = "up") %>%
+    dplyr::filter(date >= start_date & date <= stop_date) %>%
+    dplyr::select(-start_date, -stop_date) %>%
+
+    # Fill in missing days
+    dplyr::mutate(value = ifelse(missing_day, NA_day, value)) %>%
+    dplyr::select(-missing_day) %>%
+
     # Generate rolling estimators
     dplyr::summarise(
-      roll_func(proportion, date)
+      roll_func(value, date)
     ) %>%
     dplyr::ungroup() %>%
-    dplyr::relocate(athlete, date, variable, level) %>%
-    dplyr::arrange(athlete, date, variable, level)
-
+    dplyr::relocate(athlete, date, variable) %>%
+    dplyr::arrange(athlete, date, variable)
 
   # Apply post-hoc estimators
   data <- posthoc_estimators(data)
@@ -184,7 +145,7 @@ prepare_nominal <- function(data,
   # Create long  version
   data_long <- tidyr::pivot_longer(
     data,
-    cols = -(1:4),
+    cols = -(1:3),
     names_to = "estimator",
     values_to = "value"
   )
@@ -201,30 +162,14 @@ prepare_nominal <- function(data,
   }
 
   group_summary <- data_long %>%
-    dplyr::group_by(date, variable, level, estimator) %>%
+    dplyr::group_by(date, variable, estimator) %>%
     dplyr::summarise(
       group_func(value)) %>%
     dplyr::ungroup()
 
-
-  # Return factor levels
-  if(flag_value_factor) {
-    data$level <- factor(
-      data$level,
-      levels = unique(c(levels_value_factor, unique(data$level))))
-
-    data_long$level <- factor(
-      data_long$level,
-      levels = unique(c(levels_value_factor, unique(data_long$level))))
-
-    group_summary$level <- factor(
-      group_summary$level,
-      levels = unique(c(levels_value_factor, unique(group_summary$level))))
-  }
-
   return(
     new_athletemonitoring(
-      type = "nominal",
+      type = "numeric",
       data_wide = data,
       data_long = data_long,
       group_summary = group_summary,
