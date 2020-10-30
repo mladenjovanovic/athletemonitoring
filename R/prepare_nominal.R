@@ -25,7 +25,7 @@ prepare_nominal <- function(data,
 
   # Check if factor, then save levels
   flag_value_factor <- FALSE
-  if(is.factor(data[[value]])) {
+  if (is.factor(data[[value]])) {
     flag_value_factor <- TRUE
     levels_value_factor <- levels(data[[value]])
   }
@@ -203,23 +203,27 @@ prepare_nominal <- function(data,
   group_summary <- data_long %>%
     dplyr::group_by(date, variable, level, estimator) %>%
     dplyr::summarise(
-      group_func(value)) %>%
+      group_func(value)
+    ) %>%
     dplyr::ungroup()
 
 
   # Return factor levels
-  if(flag_value_factor) {
+  if (flag_value_factor) {
     data$level <- factor(
       data$level,
-      levels = unique(c(levels_value_factor, unique(data$level))))
+      levels = unique(c(levels_value_factor, unique(data$level)))
+    )
 
     data_long$level <- factor(
       data_long$level,
-      levels = unique(c(levels_value_factor, unique(data_long$level))))
+      levels = unique(c(levels_value_factor, unique(data_long$level)))
+    )
 
     group_summary$level <- factor(
       group_summary$level,
-      levels = unique(c(levels_value_factor, unique(group_summary$level))))
+      levels = unique(c(levels_value_factor, unique(group_summary$level)))
+    )
   }
 
   return(
@@ -239,5 +243,4 @@ prepare_nominal <- function(data,
       group_summary_estimators = group_summary_estimators
     )
   )
-
 }

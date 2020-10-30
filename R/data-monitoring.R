@@ -15,5 +15,3 @@
 #' @usage
 #' data(monitoring)
 "monitoring"
-
-

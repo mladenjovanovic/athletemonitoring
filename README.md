@@ -69,7 +69,7 @@ prepared_data <- prepare(
   NA_day = 0,
   
   # How should be multiple day entries summarised?
-  # With "load", it is a "sum", witho other metrics that
+  # With "load", it is a "sum", with other metrics that
   # do not aggregate, it can me "mean"
   day_aggregate = function(x) {
     sum(x, na.rm = TRUE)
@@ -106,7 +106,7 @@ prepared_data <- prepare(
 
 # Get summary
 prepared_data
-#> Athlete monitoring data with the following characteristics:
+#> Athlete monitoring numeric data with the following characteristics:
 #> 
 #> 10 athletes:
 #> Alan McDonald, Ann Whitaker, Eve Black, Frank West, John Doe, Michael Peterson, Mike Smith, Peter Jackson, Stuart Rogan, Susan Kane 
@@ -281,3 +281,95 @@ plot(
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-6.png" width="100%" />
+
+### Example for nominal scale
+
+Example and documentation in development, but here is an example (graphs
+not ready yet)
+
+``` r
+# Create nominal variable
+monitoring$Value_nominal <- cut(
+  monitoring$Value,
+  breaks = 5,
+  labels = c("Very Easy", "Easy", "Medium", "Hard", "Very Hard"),
+  include.lowest = TRUE)
+
+
+# Create a missing value
+monitoring$Value_nominal[1] <- NA
+
+# Run the athlete monitoring data preparation
+prepared_data <- prepare(
+  data = monitoring,
+  athlete = "Full Name",
+  date = "Date",
+  variable = "Variable",
+  value = "Value_nominal",
+  acute = 7,
+  chronic = 42, 
+  
+  # How should be missing entry treated? 
+  NA_session =  "<<<Session Missed>>>",
+  
+  # How should missing days (i.e. no entries) be treated?
+  NA_day = "<<<Day Missed>>>",
+  
+  # How should be multiple day entries summarised?
+  # With "load", it is a "sum", with other metrics that
+  # do not aggregate, it can me "mean"
+  day_aggregate = function(x) {
+    sum(x, na.rm = TRUE)
+  },
+  
+  # Rolling estimators for Acute and Chronic windows
+  rolling_estimators = function(x) {
+    c(
+      "mean" = mean(x, na.rm = TRUE),
+      "sd" = sd(x, na.rm = TRUE),
+      "cv" = sd(x, na.rm = TRUE) / mean(x, na.rm = TRUE)
+    )
+  },
+  
+  # Additional estimator post-rolling
+  posthoc_estimators = function(data) {
+    data$ACD <- data$acute.mean - data$chronic.mean
+    data$ACR <- data$acute.mean / data$chronic.mean
+    data$ES <- data$ACD / data$chronic.sd
+    
+    # Make sure to return the data
+    return(data)
+  },
+  
+  # Group summary estimators
+  group_summary_estimators = function(x) {
+    c(
+      "median" = median(x, na.rm = TRUE),
+      "lower" = quantile(x, 0.25, na.rm = TRUE)[[1]],
+      "upper" = quantile(x, 0.75, na.rm = TRUE)[[1]]
+    )
+  }
+)
+#> Warning: Column 'value' in the 'data' provided is not numeric. It will be
+#> treated as nominal and each level will be analyzed as separate variable using
+#> rolling proportions approach.
+
+# Get summary
+prepared_data
+#> Athlete monitoring nominal data with the following characteristics:
+#> 
+#> 10 athletes:
+#> Alan McDonald, Ann Whitaker, Eve Black, Frank West, John Doe, Michael Peterson, Mike Smith, Peter Jackson, Stuart Rogan, Susan Kane 
+#> 
+#> 363 days:
+#> From 18263 to 18625 
+#> 
+#> 1 variables:
+#> Training Load 
+#> 
+#> 7 levels:
+#> Very Easy, Easy, Medium, Hard, Very Hard, <<<Day Missed>>>, <<<Session Missed>>> 
+#> 
+#> 10 estimators:
+#> variable.value, acute.mean, acute.sd, acute.cv, chronic.mean, chronic.sd, chronic.cv, ACD, ACR, ES
+```

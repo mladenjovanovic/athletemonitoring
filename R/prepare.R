@@ -41,7 +41,7 @@
 #'
 #'   # How should be missing entry treated?
 #'   # What do we assume? Zero load? Let's keep NA
-#'   NA_session =  NA,
+#'   NA_session = NA,
 #'
 #'   # How should missing days (i.e. no entries) be treated?
 #'   # Here we assume no training, hence zero
@@ -103,7 +103,7 @@
 #'   # athlete_name = NULL,
 #'
 #'   # Use to filter out variables
-#'   #variable_name = NULL,
+#'   # variable_name = NULL,
 #'
 #'   # Show last entries
 #'   last_n = 42,
@@ -116,13 +116,15 @@
 #' # To plot group average
 #' plot(
 #'   prepared_data,
-#'   type = "bar")
+#'   type = "bar"
+#' )
 #'
 #' # To plot per athlete, use trellis argument
 #' plot(
 #'   prepared_data,
 #'   type = "bar",
-#'   trellis = TRUE)
+#'   trellis = TRUE
+#' )
 #'
 #' # To filter out athlete variable and add Acute and Chronic lines to the group average:
 #' plot(
@@ -142,7 +144,8 @@
 #'   chronic_name = "chronic.mean",
 #'
 #'   # Plot last n entries/days
-#'   last_n = 42)
+#'   last_n = 42
+#' )
 #'
 #' # If you want to plot for each athlete, use trellis=TRUE
 #' plot(
@@ -151,7 +154,8 @@
 #'   acute_name = "acute.mean",
 #'   chronic_name = "chronic.mean",
 #'   last_n = 42,
-#'   trellis = TRUE)
+#'   trellis = TRUE
+#' )
 #'
 #' # Line plots
 #' # These plots represent summary of the rollins estimators
@@ -180,7 +184,8 @@
 #'   group_upper_name = "group.upper",
 #'
 #'   # Use trellis if you do not plot for a single individual
-#'   trellis = TRUE)
+#'   trellis = TRUE
+#' )
 #'
 #' # Previous chart looks messy because it plot all athletes
 #' # To avoid that, filter out only one athlete
@@ -188,13 +193,14 @@
 #'   prepared_data,
 #'   type = "line",
 #'
-#'  # To filter out athletes
+#'   # To filter out athletes
 #'   athlete_name = "Ann Whitaker",
 #'
-#'  group_lower_name = "group.lower",
-#'  group_central_name = "group.median",
-#'  group_upper_name = "group.upper",
-#'   trellis = TRUE)
+#'   group_lower_name = "group.lower",
+#'   group_central_name = "group.median",
+#'   group_upper_name = "group.upper",
+#'   trellis = TRUE
+#' )
 prepare <- function(data,
                     athlete,
                     date,
@@ -226,8 +232,6 @@ prepare <- function(data,
                         "upper" = stats::quantile(x, 0.75, na.rm = TRUE)[[1]]
                       )
                     }) {
-
-
   if (is.numeric(data[[value]])) {
     # Numeric
     prepare_numeric(
@@ -244,12 +248,14 @@ prepare <- function(data,
       rolling_fill = rolling_fill,
       rolling_estimators = rolling_estimators,
       posthoc_estimators = posthoc_estimators,
-      group_summary_estimators = group_summary_estimators)
+      group_summary_estimators = group_summary_estimators
+    )
   } else {
     # Nominal
     warning(
-      "Value column in the data provided is not numeric. It will be treated as nominal and each level will be analyzed as separate variable using rolling proportions approach.",
-      call. = FALSE, immediate. = TRUE)
+      "Column 'value' in the 'data' provided is not numeric. It will be treated as nominal and each level will be analyzed as separate variable using rolling proportions approach.",
+      call. = FALSE, immediate. = TRUE
+    )
 
     prepare_nominal(
       data = data,
@@ -265,6 +271,7 @@ prepare <- function(data,
       rolling_fill = rolling_fill,
       rolling_estimators = rolling_estimators,
       posthoc_estimators = posthoc_estimators,
-      group_summary_estimators = group_summary_estimators)
+      group_summary_estimators = group_summary_estimators
+    )
   }
 }

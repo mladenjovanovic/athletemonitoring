@@ -122,7 +122,6 @@ prepare_numeric <- function(data,
     dplyr::arrange(date) %>%
     # Tag missing day
     dplyr::mutate(missing_day = is.na(start_date)) %>%
-
     tidyr::fill(start_date, stop_date, .direction = "up") %>%
     dplyr::filter(date >= start_date & date <= stop_date) %>%
     dplyr::select(-start_date, -stop_date) %>%
@@ -164,7 +163,8 @@ prepare_numeric <- function(data,
   group_summary <- data_long %>%
     dplyr::group_by(date, variable, estimator) %>%
     dplyr::summarise(
-      group_func(value)) %>%
+      group_func(value)
+    ) %>%
     dplyr::ungroup()
 
   return(
@@ -184,5 +184,4 @@ prepare_numeric <- function(data,
       group_summary_estimators = group_summary_estimators
     )
   )
-
 }

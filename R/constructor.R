@@ -11,7 +11,6 @@ new_athletemonitoring <- function(type,
                                   rolling_estimators,
                                   posthoc_estimators,
                                   group_summary_estimators) {
-
   athletemonitoring_object <- list(
     type = type,
     data_wide = data_wide,

@@ -28,7 +28,7 @@
 #'
 #'   # How should be missing entry treated?
 #'   # What do we assume? Zero load? Let's keep NA
-#'   NA_session =  NA,
+#'   NA_session = NA,
 #'
 #'   # How should missing days (i.e. no entries) be treated?
 #'   # Here we assume no training, hence zero
@@ -90,7 +90,7 @@
 #'   # athlete_name = NULL,
 #'
 #'   # Use to filter out variables
-#'   #variable_name = NULL,
+#'   # variable_name = NULL,
 #'
 #'   # Show last entries
 #'   last_n = 42,
@@ -103,13 +103,15 @@
 #' # To plot group average
 #' plot(
 #'   prepared_data,
-#'   type = "bar")
+#'   type = "bar"
+#' )
 #'
 #' # To plot per athlete, use trellis argument
 #' plot(
 #'   prepared_data,
 #'   type = "bar",
-#'   trellis = TRUE)
+#'   trellis = TRUE
+#' )
 #'
 #' # To filter out athletem variable and add Acute and Chronic lines to the group average:
 #' plot(
@@ -129,7 +131,8 @@
 #'   chronic_name = "chronic.mean",
 #'
 #'   # Plot last n entries/days
-#'   last_n = 42)
+#'   last_n = 42
+#' )
 #'
 #' # If you want to plot for each athlete, use trellis=TRUE
 #' plot(
@@ -138,7 +141,8 @@
 #'   acute_name = "acute.mean",
 #'   chronic_name = "chronic.mean",
 #'   last_n = 42,
-#'   trellis = TRUE)
+#'   trellis = TRUE
+#' )
 #'
 #' # Line plots
 #' # These plots represent summary of the rollins estimators
@@ -167,7 +171,8 @@
 #'   group_upper_name = "group.upper",
 #'
 #'   # Use trellis if you do not plot for a single individual
-#'   trellis = TRUE)
+#'   trellis = TRUE
+#' )
 #'
 #' # Previous chart looks messy because it plot all athletes
 #' # To avoid that, filter out only one athlete
@@ -175,13 +180,14 @@
 #'   prepared_data,
 #'   type = "line",
 #'
-#'  # To filter out athletes
+#'   # To filter out athletes
 #'   athlete_name = "Ann Whitaker",
 #'
-#'  group_lower_name = "group.lower",
-#'  group_central_name = "group.median",
-#'  group_upper_name = "group.upper",
-#'   trellis = TRUE)
+#'   group_lower_name = "group.lower",
+#'   group_central_name = "group.median",
+#'   group_upper_name = "group.upper",
+#'   trellis = TRUE
+#' )
 plot.athletemonitoring <- function(x,
                                    type = "line",
                                    ...) {
@@ -404,7 +410,7 @@ plot_athletemonitoring_table <- function(object,
     )
   }
 
-    plot_data <- object$data_long
+  plot_data <- object$data_long
 
   plot_data <- plot_data %>%
     # Filter last_n
@@ -429,7 +435,7 @@ plot_athletemonitoring_table <- function(object,
   # If provided, filter estimator
   if (!is.null(estimator_name)) {
     # Make sure to add "variable.value"
-    if(!("variable.value" %in% estimator_name)) {
+    if (!("variable.value" %in% estimator_name)) {
       estimator_name <- c("variable.value", estimator_name)
     }
 
@@ -445,7 +451,8 @@ plot_athletemonitoring_table <- function(object,
     plot_data <- plot_data %>%
       dplyr::mutate(
         estimator = factor(estimator),
-        estimator = stats::relevel(estimator, ref = "variable.value"))
+        estimator = stats::relevel(estimator, ref = "variable.value")
+      )
   }
 
   # Round values
@@ -503,12 +510,12 @@ plot_athletemonitoring_table <- function(object,
   out <- formattable::formattable(
     plot_data,
     list(
-      #area(col = seq(5, ncol(plot_data), by = 2)) ~ color_tile("#DeF7E9", "#71CA97")
+      # area(col = seq(5, ncol(plot_data), by = 2)) ~ color_tile("#DeF7E9", "#71CA97")
     )
   )
 
   out <- formattable::as.htmlwidget(out)
-  out$dependencies = c(out$dependencies, htmlwidgets:::widget_dependencies("sparkline", "sparkline"))
+  out$dependencies <- c(out$dependencies, htmlwidgets:::widget_dependencies("sparkline", "sparkline"))
 
   return(out)
 }
