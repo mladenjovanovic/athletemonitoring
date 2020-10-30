@@ -330,6 +330,9 @@ prepare <- function(data,
   data <- data %>%
     # fill in the individual/variable start and stop days and remove excess
     dplyr::group_by(athlete, variable) %>%
+
+    # Arrange/Sort
+    dplyr::arrange(date) %>%
     # Tag missing day
     dplyr::mutate(missing_day = is.na(start_date)) %>%
 
@@ -342,7 +345,6 @@ prepare <- function(data,
     dplyr::select(-missing_day) %>%
 
     # Generate rolling estimators
-    dplyr::arrange(date) %>%
     dplyr::summarise(
       roll_func(value, date)
     ) %>%
