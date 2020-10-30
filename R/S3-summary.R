@@ -79,25 +79,42 @@ summary.athletemonitoring <- function(object, ...) {
   # Code chunk for dealing with R CMD check note
   athlete <- NULL
   variable <- NULL
+  level <- NULL
+  levels_sum <- NULL
   variable.value <- NULL
   # +++++++++++++++++++++++++++++++++++++++++++
 
-  summary_table <- object$data_wide %>%
-    dplyr::group_by(athlete, variable) %>%
-    dplyr::summarise(
-      `Day entries` = sum(!is.na(variable.value)),
-      `Missing` = sum(is.na(variable.value)),
-      `Start date` = min(date),
-      `Stop date` = max(date),
-      `Mean` = mean(variable.value, na.rm = TRUE),
-      `SD` = stats::sd(variable.value, na.rm = TRUE),
-      `Min` = min(variable.value, na.rm = TRUE),
-      `Max` = mean(variable.value, na.rm = TRUE),
-      `Median` = stats::median(variable.value, na.rm = TRUE),
-      `IQR` = stats::IQR(variable.value, na.rm = TRUE),
-      `MAD` = stats::mad(variable.value, na.rm = TRUE)
-    ) %>%
-    dplyr::ungroup()
+  if (object$type == "nominal") {
+    summary_table <- object$data_wide %>%
+      dplyr::group_by(athlete, variable) %>%
+      dplyr::mutate(levels_sum = sum(variable.value, na.rm = TRUE)) %>%
+      dplyr::group_by(athlete, variable, level) %>%
+      dplyr::summarise(
+        `Day entries` = sum(!is.na(variable.value)),
+        `Start date` = min(date),
+        `Stop date` = max(date),
+        `Proportion` = sum(variable.value, na.rm = TRUE) / levels_sum[1]
+      ) %>%
+      dplyr::ungroup()
+  } else {
+    summary_table <- object$data_wide %>%
+      dplyr::group_by(athlete, variable) %>%
+      dplyr::summarise(
+        `Day entries` = sum(!is.na(variable.value)),
+        `Missing` = sum(is.na(variable.value)),
+        `Start date` = min(date),
+        `Stop date` = max(date),
+        `Mean` = mean(variable.value, na.rm = TRUE),
+        `SD` = stats::sd(variable.value, na.rm = TRUE),
+        `Min` = min(variable.value, na.rm = TRUE),
+        `Max` = mean(variable.value, na.rm = TRUE),
+        `Median` = stats::median(variable.value, na.rm = TRUE),
+        `IQR` = stats::IQR(variable.value, na.rm = TRUE),
+        `MAD` = stats::mad(variable.value, na.rm = TRUE)
+      ) %>%
+      dplyr::ungroup()
+  }
+
 
   return(summary_table)
 }

@@ -1,5 +1,8 @@
 #' Prepare Athlete Monitoring Data
 #'
+#'
+#' @details Extra arguments \code{...} involve \code{use_counts} for nominal model
+#'
 #' @param data Data frame
 #' @param athlete Name of the column in the \code{data} where the athlete id or name is located
 #' @param date Name of the column in the \code{data} where the date is located. \code{date} has
@@ -15,6 +18,7 @@
 #' @param rolling_estimators Function providing rolling estimators. See Details
 #' @param posthoc_estimators Function providing post-hoc estimators. See Details
 #' @param group_summary_estimators Function providing group summary estimators. See Details
+#' @param ... Extra arguments. See Details
 #'
 #' @return Object of class \code{athletemonitoring}
 #' @export
@@ -231,7 +235,8 @@ prepare <- function(data,
                         "lower" = stats::quantile(x, 0.25, na.rm = TRUE)[[1]],
                         "upper" = stats::quantile(x, 0.75, na.rm = TRUE)[[1]]
                       )
-                    }) {
+                    },
+                    ...) {
   if (is.numeric(data[[value]])) {
     # Numeric
     prepare_numeric(
@@ -253,7 +258,7 @@ prepare <- function(data,
   } else {
     # Nominal
     warning(
-      "Column 'value' in the 'data' provided is not numeric. It will be treated as nominal and each level will be analyzed as separate variable using rolling proportions approach.",
+      "Column 'value' in the 'data' provided is not numeric. It will be treated as nominal and each level will be analyzed as separate variable using rolling proportions or counts approach.",
       call. = FALSE, immediate. = TRUE
     )
 
@@ -271,7 +276,8 @@ prepare <- function(data,
       rolling_fill = rolling_fill,
       rolling_estimators = rolling_estimators,
       posthoc_estimators = posthoc_estimators,
-      group_summary_estimators = group_summary_estimators
+      group_summary_estimators = group_summary_estimators,
+      ...
     )
   }
 }

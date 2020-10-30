@@ -11,7 +11,8 @@ prepare_nominal <- function(data,
                             rolling_fill,
                             rolling_estimators,
                             posthoc_estimators,
-                            group_summary_estimators) {
+                            group_summary_estimators,
+                            use_counts = FALSE) {
 
   # +++++++++++++++++++++++++++++++++++++++++++
   # Code chunk for dealing with R CMD check note
@@ -114,7 +115,7 @@ prepare_nominal <- function(data,
 
     # Create proportion
     dplyr::group_by(athlete, date, variable) %>%
-    dplyr::mutate(proportion = value / length(value))
+    dplyr::mutate(proportion = value / sum(value))
 
   # Rolling function
   # =================
@@ -168,11 +169,24 @@ prepare_nominal <- function(data,
   data <- data %>%
     dplyr::group_by(athlete, variable, level) %>%
     # Arrange/Sort
-    dplyr::arrange(date) %>%
-    # Generate rolling estimators
-    dplyr::summarise(
-      roll_func(proportion, date)
-    ) %>%
+    dplyr::arrange(date)
+
+  # Generate rolling estimators
+  if (use_counts) {
+    # Use counts
+    data <- data %>%
+      dplyr::summarise(
+        roll_func(value, date)
+      )
+  } else {
+    # Use proportions
+    data <- data %>%
+      dplyr::summarise(
+        roll_func(proportion, date)
+      )
+  }
+
+  data <- data %>%
     dplyr::ungroup() %>%
     dplyr::relocate(athlete, date, variable, level) %>%
     dplyr::arrange(athlete, date, variable, level)
@@ -240,7 +254,8 @@ prepare_nominal <- function(data,
       rolling_fill = rolling_fill,
       rolling_estimators = rolling_estimators,
       posthoc_estimators = posthoc_estimators,
-      group_summary_estimators = group_summary_estimators
+      group_summary_estimators = group_summary_estimators,
+      use_counts = use_counts
     )
   )
 }

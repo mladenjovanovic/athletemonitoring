@@ -38,7 +38,7 @@ prepared_data <- prepare(
 
   # How should be missing entry treated?
   # What do we assume? Zero load? Let's keep NA
-  NA_session =  NA,
+  NA_session = NA,
 
   # How should missing days (i.e. no entries) be treated?
   # Here we assume no training, hence zero
@@ -100,7 +100,7 @@ plot(
   # athlete_name = NULL,
 
   # Use to filter out variables
-  #variable_name = NULL,
+  # variable_name = NULL,
 
   # Show last entries
   last_n = 42,
@@ -113,13 +113,15 @@ plot(
 # To plot group average
 plot(
   prepared_data,
-  type = "bar")
+  type = "bar"
+)
 
 # To plot per athlete, use trellis argument
 plot(
   prepared_data,
   type = "bar",
-  trellis = TRUE)
+  trellis = TRUE
+)
 
 # To filter out athletem variable and add Acute and Chronic lines to the group average:
 plot(
@@ -139,7 +141,8 @@ plot(
   chronic_name = "chronic.mean",
 
   # Plot last n entries/days
-  last_n = 42)
+  last_n = 42
+)
 
 # If you want to plot for each athlete, use trellis=TRUE
 plot(
@@ -148,7 +151,8 @@ plot(
   acute_name = "acute.mean",
   chronic_name = "chronic.mean",
   last_n = 42,
-  trellis = TRUE)
+  trellis = TRUE
+)
 
 # Line plots
 # These plots represent summary of the rollins estimators
@@ -177,7 +181,8 @@ plot(
   group_upper_name = "group.upper",
 
   # Use trellis if you do not plot for a single individual
-  trellis = TRUE)
+  trellis = TRUE
+)
 
 # Previous chart looks messy because it plot all athletes
 # To avoid that, filter out only one athlete
@@ -185,11 +190,12 @@ plot(
   prepared_data,
   type = "line",
 
- # To filter out athletes
+  # To filter out athletes
   athlete_name = "Ann Whitaker",
 
- group_lower_name = "group.lower",
- group_central_name = "group.median",
- group_upper_name = "group.upper",
-  trellis = TRUE)
+  group_lower_name = "group.lower",
+  group_central_name = "group.median",
+  group_upper_name = "group.upper",
+  trellis = TRUE
+)
 }

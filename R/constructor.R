@@ -10,7 +10,8 @@ new_athletemonitoring <- function(type,
                                   rolling_fill,
                                   rolling_estimators,
                                   posthoc_estimators,
-                                  group_summary_estimators) {
+                                  group_summary_estimators,
+                                  ...) {
   athletemonitoring_object <- list(
     type = type,
     data_wide = data_wide,
@@ -24,7 +25,8 @@ new_athletemonitoring <- function(type,
     rolling_fill = rolling_fill,
     rolling_estimators = rolling_estimators,
     posthoc_estimators = posthoc_estimators,
-    group_summary_estimators = group_summary_estimators
+    group_summary_estimators = group_summary_estimators,
+    extra_arguments = list(...)
   )
 
   class(athletemonitoring_object) <- "athletemonitoring"

@@ -171,7 +171,7 @@
 
   <span class='co'># How should be missing entry treated?</span>
   <span class='co'># What do we assume? Zero load? Let's keep NA</span>
-  NA_session <span class='op'>=</span>  <span class='cn'>NA</span>,
+  NA_session <span class='op'>=</span> <span class='cn'>NA</span>,
 
   <span class='co'># How should missing days (i.e. no entries) be treated?</span>
   <span class='co'># Here we assume no training, hence zero</span>
@@ -259,7 +259,7 @@
   <span class='co'># athlete_name = NULL,</span>
 
   <span class='co'># Use to filter out variables</span>
-  <span class='co'>#variable_name = NULL,</span>
+  <span class='co'># variable_name = NULL,</span>
 
   <span class='co'># Show last entries</span>
   last_n <span class='op'>=</span> <span class='fl'>42</span>,
@@ -272,13 +272,15 @@
 <span class='co'># To plot group average</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
   <span class='va'>prepared_data</span>,
-  type <span class='op'>=</span> <span class='st'>"bar"</span><span class='op'>)</span>
+  type <span class='op'>=</span> <span class='st'>"bar"</span>
+<span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Plotting average across athletes. Please select athlete or use `trellis=TRUE`</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 42 row(s) containing missing values (geom_path).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 42 row(s) containing missing values (geom_path).</span></div><div class='img'><img src='plot.athletemonitoring-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># To plot per athlete, use trellis argument</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
   <span class='va'>prepared_data</span>,
   type <span class='op'>=</span> <span class='st'>"bar"</span>,
-  trellis <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+  trellis <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 420 row(s) containing missing values (geom_path).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 420 row(s) containing missing values (geom_path).</span></div><div class='img'><img src='plot.athletemonitoring-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># To filter out athletem variable and add Acute and Chronic lines to the group average:</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
@@ -298,7 +300,8 @@
   chronic_name <span class='op'>=</span> <span class='st'>"chronic.mean"</span>,
 
   <span class='co'># Plot last n entries/days</span>
-  last_n <span class='op'>=</span> <span class='fl'>42</span><span class='op'>)</span>
+  last_n <span class='op'>=</span> <span class='fl'>42</span>
+<span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Plotting average across athletes. Please select athlete or use `trellis=TRUE`</span></div><div class='img'><img src='plot.athletemonitoring-3.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># If you want to plot for each athlete, use trellis=TRUE</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
@@ -307,7 +310,8 @@
   acute_name <span class='op'>=</span> <span class='st'>"acute.mean"</span>,
   chronic_name <span class='op'>=</span> <span class='st'>"chronic.mean"</span>,
   last_n <span class='op'>=</span> <span class='fl'>42</span>,
-  trellis <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+  trellis <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
 </div><div class='img'><img src='plot.athletemonitoring-4.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Line plots</span>
 <span class='co'># These plots represent summary of the rollins estimators</span>
@@ -336,7 +340,8 @@
   group_upper_name <span class='op'>=</span> <span class='st'>"group.upper"</span>,
 
   <span class='co'># Use trellis if you do not plot for a single individual</span>
-  trellis <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+  trellis <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
 </div><div class='img'><img src='plot.athletemonitoring-5.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Previous chart looks messy because it plot all athletes</span>
 <span class='co'># To avoid that, filter out only one athlete</span>
@@ -344,13 +349,14 @@
   <span class='va'>prepared_data</span>,
   type <span class='op'>=</span> <span class='st'>"line"</span>,
 
- <span class='co'># To filter out athletes</span>
+  <span class='co'># To filter out athletes</span>
   athlete_name <span class='op'>=</span> <span class='st'>"Ann Whitaker"</span>,
 
- group_lower_name <span class='op'>=</span> <span class='st'>"group.lower"</span>,
- group_central_name <span class='op'>=</span> <span class='st'>"group.median"</span>,
- group_upper_name <span class='op'>=</span> <span class='st'>"group.upper"</span>,
-  trellis <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+  group_lower_name <span class='op'>=</span> <span class='st'>"group.lower"</span>,
+  group_central_name <span class='op'>=</span> <span class='st'>"group.median"</span>,
+  group_upper_name <span class='op'>=</span> <span class='st'>"group.upper"</span>,
+  trellis <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
 </div><div class='img'><img src='plot.athletemonitoring-6.png' alt='' width='700' height='433' /></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

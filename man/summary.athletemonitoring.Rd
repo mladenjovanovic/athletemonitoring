@@ -39,7 +39,7 @@ prepared_data <- prepare(
 
   # How should be missing entry treated?
   # What do we assume? Zero load? Let's keep NA
-  NA_session =  NA,
+  NA_session = NA,
 
   # How should missing days (i.e. no entries) be treated?
   # Here we assume no training, hence zero
