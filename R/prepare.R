@@ -124,7 +124,7 @@
 #'   type = "bar",
 #'   trellis = TRUE)
 #'
-#' # To filter out athletem variable and add Acute and Chronic lines to the group average:
+#' # To filter out athlete variable and add Acute and Chronic lines to the group average:
 #' plot(
 #'   prepared_data,
 #'   type = "bar",
@@ -257,7 +257,7 @@ prepare <- function(data,
       stop_date = max(date)
     )
 
-  # Get the overal start and stop date to impute missing days
+  # Get the overall start and stop date to impute missing days
   start_date <- min(data$date)
   stop_date <- max(data$date)
 
@@ -292,7 +292,7 @@ prepare <- function(data,
       )
     )
 
-    # Check is ammount of data in 'value' is smaller than rolling window
+    # Check is amount of data in 'value' is smaller than rolling window
     # Since zoo::rollapply will not return names estimators
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++
     if (length(value) < acute) {
@@ -330,12 +330,16 @@ prepare <- function(data,
   data <- data %>%
     # fill in the individual/variable start and stop days and remove excess
     dplyr::group_by(athlete, variable) %>%
+    # Tag missing day
+    dplyr::mutate(missing_day = is.na(start_date)) %>%
+
     tidyr::fill(start_date, stop_date, .direction = "up") %>%
     dplyr::filter(date >= start_date & date <= stop_date) %>%
     dplyr::select(-start_date, -stop_date) %>%
 
     # Fill in missing days
-    dplyr::mutate(value = ifelse(is.na(value), NA_day, value)) %>%
+    dplyr::mutate(value = ifelse(missing_day, NA_day, value)) %>%
+    dplyr::select(-missing_day) %>%
 
     # Generate rolling estimators
     dplyr::arrange(date) %>%
