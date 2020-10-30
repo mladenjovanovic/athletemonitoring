@@ -73,13 +73,25 @@
 #' prepared_data
 #' summary(prepared_data)
 print.athletemonitoring <- function(x, ...) {
-  cat("Athlete monitoring data with the following characteristics:\n\n")
+
+  if (x$type == "nominal") {
+    cat("Athlete monitoring nominal data with the following characteristics:\n\n")
+  } else {
+    cat("Athlete monitoring numeric data with the following characteristics:\n\n")
+  }
+
   cat(length(unique(x$data_wide$athlete)), "athletes:\n")
   cat(paste(unique(x$data_wide$athlete), collapse = ", "), "\n\n")
   cat(length(unique(x$data_wide$date)), "days:\n")
   cat("From", min(x$data_wide$date), "to", max(x$data_wide$date), "\n\n")
   cat(length(unique(x$data_wide$variable)), "variables:\n")
   cat(paste(unique(x$data_wide$variable), collapse = ", "), "\n\n")
+
+  if (x$type == "nominal") {
+    cat(length(unique(x$data_wide$level)), "levels:\n")
+    cat(paste(levels(x$data_wide$level), collapse = ", "), "\n\n")
+  }
+
   cat(length(unique(x$data_long$estimator)), "estimators:\n")
   cat(paste(unique(x$data_long$estimator), collapse = ", "))
 }
