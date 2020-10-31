@@ -82,6 +82,8 @@ summary.athletemonitoring <- function(object, ...) {
   level <- NULL
   levels_sum <- NULL
   variable.value <- NULL
+  missing_entry <- NULL
+  missing_day <- NULL
   # +++++++++++++++++++++++++++++++++++++++++++
 
   if (object$type == "nominal") {
@@ -91,6 +93,8 @@ summary.athletemonitoring <- function(object, ...) {
       dplyr::group_by(athlete, variable, level) %>%
       dplyr::summarise(
         `Day entries` = sum(!is.na(variable.value)),
+        `Missing entries` = sum(missing_entry),
+        `Missing days` = sum(missing_day),
         `Start date` = min(date),
         `Stop date` = max(date),
         `Proportion` = sum(variable.value, na.rm = TRUE) / levels_sum[1]
@@ -101,7 +105,8 @@ summary.athletemonitoring <- function(object, ...) {
       dplyr::group_by(athlete, variable) %>%
       dplyr::summarise(
         `Day entries` = sum(!is.na(variable.value)),
-        `Missing` = sum(is.na(variable.value)),
+        `Missing entries` = sum(missing_entry),
+        `Missing days` = sum(missing_day),
         `Start date` = min(date),
         `Stop date` = max(date),
         `Mean` = mean(variable.value, na.rm = TRUE),

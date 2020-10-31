@@ -18,6 +18,7 @@
 #' @param rolling_estimators Function providing rolling estimators. See Details
 #' @param posthoc_estimators Function providing post-hoc estimators. See Details
 #' @param group_summary_estimators Function providing group summary estimators. See Details
+#' @param iter Should progress be shown? Default is \code{TRUE}
 #' @param ... Extra arguments. See Details
 #'
 #' @return Object of class \code{athletemonitoring}
@@ -211,7 +212,7 @@ prepare <- function(data,
                     variable,
                     value,
                     day_aggregate = function(x) {
-                      sum(x, na.rm = TRUE)
+                      sum(x)
                     },
                     NA_session = NA,
                     NA_day = NA,
@@ -236,6 +237,7 @@ prepare <- function(data,
                         "upper" = stats::quantile(x, 0.75, na.rm = TRUE)[[1]]
                       )
                     },
+                    iter = TRUE,
                     ...) {
   if (is.numeric(data[[value]])) {
     # Numeric
@@ -249,18 +251,26 @@ prepare <- function(data,
       NA_session = NA_session,
       NA_day = NA_day,
       acute = acute,
-      chronic = acute,
+      chronic = chronic,
       rolling_fill = rolling_fill,
       rolling_estimators = rolling_estimators,
       posthoc_estimators = posthoc_estimators,
-      group_summary_estimators = group_summary_estimators
+      group_summary_estimators = group_summary_estimators,
+      iter = iter
     )
   } else {
     # Nominal
-    warning(
-      "Column 'value' in the 'data' provided is not numeric. It will be treated as nominal and each level will be analyzed as separate variable using rolling proportions or counts approach.",
-      call. = FALSE, immediate. = TRUE
-    )
+    if(iter) {
+      message(
+        paste0(
+          "Using nominal approach: ",
+          "column 'value' in the 'data' provided is not numeric. ",
+          "It will be treated as nominal and each level will be analyzed as separate ",
+          "variable using rolling proportions or counts approach. ",
+          "To use rolling counts, set 'use_counts=TRUE'.\n"
+        )
+      )
+    }
 
     prepare_nominal(
       data = data,
@@ -272,11 +282,12 @@ prepare <- function(data,
       NA_session = NA_session,
       NA_day = NA_day,
       acute = acute,
-      chronic = acute,
+      chronic = chronic,
       rolling_fill = rolling_fill,
       rolling_estimators = rolling_estimators,
       posthoc_estimators = posthoc_estimators,
       group_summary_estimators = group_summary_estimators,
+      iter = iter,
       ...
     )
   }

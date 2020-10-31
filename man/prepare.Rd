@@ -10,7 +10,7 @@ prepare(
   date,
   variable,
   value,
-  day_aggregate = function(x) {     sum(x, na.rm = TRUE) },
+  day_aggregate = function(x) {     sum(x) },
   NA_session = NA,
   NA_day = NA,
   acute = 7,
@@ -23,6 +23,7 @@ prepare(
   group_summary_estimators = function(x) {     c(median = stats::median(x, na.rm =
     TRUE), lower = stats::quantile(x, 0.25, na.rm = TRUE)[[1]], upper =
     stats::quantile(x, 0.75, na.rm = TRUE)[[1]]) },
+  iter = TRUE,
   ...
 )
 }
@@ -55,6 +56,8 @@ to be either \code{Date} or \code{numeric} class}
 \item{posthoc_estimators}{Function providing post-hoc estimators. See Details}
 
 \item{group_summary_estimators}{Function providing group summary estimators. See Details}
+
+\item{iter}{Should progress be shown? Default is \code{TRUE}}
 
 \item{...}{Extra arguments. See Details}
 }

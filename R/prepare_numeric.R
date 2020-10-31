@@ -11,14 +11,24 @@ prepare_numeric <- function(data,
                             rolling_fill,
                             rolling_estimators,
                             posthoc_estimators,
-                            group_summary_estimators) {
+                            group_summary_estimators,
+                            iter) {
 
   # +++++++++++++++++++++++++++++++++++++++++++
   # Code chunk for dealing with R CMD check note
-  estimator <- NULL
   missing_day <- NULL
+  missing_entry <- NULL
+  proportion <- NULL
+  estimator <- NULL
+  acute.missing_entry <- NULL
+  chronic.missing_entry <- NULL
+  acute.missing_day <- NULL
+  chronic.missing_day <- NULL
   # +++++++++++++++++++++++++++++++++++++++++++
 
+  if(iter) {
+    message("Preparing data...")
+  }
 
   # Extract the data
   data <- data.frame(
@@ -32,10 +42,15 @@ prepare_numeric <- function(data,
   data <- data %>%
     dplyr::group_by(athlete, date, variable) %>%
 
-    # Fill in missing sessions
-    dplyr::mutate(value = ifelse(is.na(value), NA_session, value)) %>%
+    # Fill in missing entry
+    dplyr::mutate(
+      missing_entry = is.na(value),
+      value = ifelse(missing_entry, NA_session, value)) %>%
+
     # Aggregate to day value
-    dplyr::summarise(value = day_aggregate(value)) %>%
+    dplyr::summarise(
+      missing_entry = sum(missing_entry),
+      value = day_aggregate(value)) %>%
 
     # Get start and stop dates for every athlete and variable
     dplyr::group_by(athlete, variable) %>%
@@ -64,6 +79,13 @@ prepare_numeric <- function(data,
       variable = unique(data$variable)
     ),
     all = TRUE
+  )
+
+  # Fill missing_entry that has NA values now
+  data$missing_entry <- ifelse(
+    is.na(data$missing_entry),
+    0,
+    data$missing_entry
   )
 
   # Rolling function
@@ -114,12 +136,17 @@ prepare_numeric <- function(data,
     data.frame(date = date, variable.value = value, acute_df, chronic_df)
   }
 
+  if(iter) {
+    message("Rolling...")
+  }
+
   data <- data %>%
     # fill in the individual/variable start and stop days and remove excess
     dplyr::group_by(athlete, variable) %>%
 
     # Arrange/Sort
     dplyr::arrange(date) %>%
+
     # Tag missing day
     dplyr::mutate(missing_day = is.na(start_date)) %>%
     tidyr::fill(start_date, stop_date, .direction = "up") %>%
@@ -128,15 +155,16 @@ prepare_numeric <- function(data,
 
     # Fill in missing days
     dplyr::mutate(value = ifelse(missing_day, NA_day, value)) %>%
-    dplyr::select(-missing_day) %>%
 
     # Generate rolling estimators
-    dplyr::summarise(
+    dplyr::mutate(
       roll_func(value, date)
     ) %>%
     dplyr::ungroup() %>%
-    dplyr::relocate(athlete, date, variable) %>%
-    dplyr::arrange(athlete, date, variable)
+    dplyr::select(-value) %>%
+    dplyr::relocate(athlete, date, variable, missing_entry, missing_day) %>%
+    dplyr::arrange(athlete, date, variable) %>%
+    dplyr::mutate(missing_day = as.numeric(missing_day))
 
   # Apply post-hoc estimators
   data <- posthoc_estimators(data)
@@ -144,13 +172,17 @@ prepare_numeric <- function(data,
   # Create long  version
   data_long <- tidyr::pivot_longer(
     data,
-    cols = -(1:3),
+    cols = -(1:5),
     names_to = "estimator",
     values_to = "value"
   )
 
   # ===================================
   # Group summaries
+
+  if(iter) {
+    message("Group summaries...")
+  }
 
   # Group summary aggregator
   group_func <- function(x) {
@@ -167,12 +199,67 @@ prepare_numeric <- function(data,
     ) %>%
     dplyr::ungroup()
 
+  # Missing data aggregator
+
+  if(iter) {
+    message("Missing data summaries...")
+  }
+
+  missing_summary_athlete <- data %>%
+    dplyr::select(athlete, date, variable, missing_entry, missing_day) %>%
+    dplyr::group_by(athlete, variable) %>%
+    dplyr::mutate(
+      acute.missing_entry = zoo::rollapply(
+        missing_entry,
+        FUN = sum,
+        width = acute,
+        fill = rolling_fill,
+        align = "right"),
+      chronic.missing_entry = zoo::rollapply(
+        missing_entry,
+        FUN = sum,
+        width = chronic,
+        fill = rolling_fill,
+        align = "right"),
+      acute.missing_day = zoo::rollapply(
+        missing_day,
+        FUN = sum,
+        width = acute,
+        fill = rolling_fill,
+        align = "right"),
+      chronic.missing_day = zoo::rollapply(
+        missing_day,
+        FUN = sum,
+        width = chronic,
+        fill = rolling_fill,
+        align = "right")
+    ) %>%
+    dplyr::ungroup()
+
+  missing_summary_group <- missing_summary_athlete %>%
+    dplyr::group_by(date, variable) %>%
+    dplyr::summarise(
+      missing_entry = sum(missing_entry),
+      missing_day = sum(missing_day),
+      acute.missing_entry = sum(acute.missing_entry),
+      chronic.missing_entry = sum(chronic.missing_entry),
+      acute.missing_day = sum(acute.missing_day),
+      chronic.missing_day = sum(chronic.missing_day)
+    ) %>%
+    dplyr::ungroup()
+
+  if(iter) {
+    message("Done!")
+  }
+
   return(
     new_athletemonitoring(
       type = "numeric",
       data_wide = data,
       data_long = data_long,
       group_summary = group_summary,
+      missing_summary_athlete = missing_summary_athlete,
+      missing_summary_group = missing_summary_group,
       day_aggregate = day_aggregate,
       NA_session = NA_session,
       NA_day = NA_day,
