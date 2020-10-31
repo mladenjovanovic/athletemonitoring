@@ -209,6 +209,7 @@ plot.athletemonitoring <- function(x,
 plot_athletemonitoring_line <- function(object,
                                         athlete_name = NULL,
                                         variable_name = NULL,
+                                        level_name = NULL,
                                         estimator_name = NULL,
                                         group_lower_name = NULL,
                                         group_central_name = NULL,
@@ -380,6 +381,7 @@ plot_athletemonitoring_bar <- function(object,
 plot_athletemonitoring_table <- function(object,
                                          athlete_name = NULL,
                                          variable_name = NULL,
+                                         level_name = NULL,
                                          estimator_name = NULL,
                                          last_n = 42,
                                          digits = 2) {
@@ -390,6 +392,9 @@ plot_athletemonitoring_table <- function(object,
   variable <- NULL
   estimator <- NULL
   value <- NULL
+  missing_entry <- NULL
+  missing_day <- NULL
+  level <- NULL
   # +++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -413,6 +418,8 @@ plot_athletemonitoring_table <- function(object,
   plot_data <- object$data_long
 
   plot_data <- plot_data %>%
+    # Remove missing data info
+    dplyr::select(-missing_entry, -missing_day) %>%
     # Filter last_n
     dplyr::group_by(athlete, variable) %>%
     dplyr::filter(date > max(date) - last_n) %>%
@@ -430,6 +437,13 @@ plot_athletemonitoring_table <- function(object,
     plot_data <- plot_data %>%
       dplyr::filter(variable %in% variable_name) %>%
       dplyr::mutate(variable = factor(variable, levels = variable_name))
+  }
+
+  # If provided, filter level
+  if (!is.null(level_name) & object$type == "nominal") {
+    plot_data <- plot_data %>%
+      dplyr::filter(level %in% level_name) %>%
+      dplyr::mutate(level = factor(level, levels = level_name))
   }
 
   # If provided, filter estimator
@@ -459,8 +473,17 @@ plot_athletemonitoring_table <- function(object,
   plot_data$value <- round(plot_data$value, digits)
 
   # Historical data
-  historical_data <- plot_data %>%
-    dplyr::group_by(athlete, variable, estimator) %>%
+  historical_data <- plot_data
+
+  if (object$type == "nominal") {
+    historical_data <- historical_data %>%
+      dplyr::group_by(athlete, variable, estimator, level)
+  } else {
+    historical_data <- historical_data %>%
+      dplyr::group_by(athlete, variable, estimator)
+  }
+
+  historical_data <- historical_data %>%
     dplyr::summarize(
       historical = as.character(htmltools::as.tags(
         sparkline::sparkline(value,
@@ -482,29 +505,54 @@ plot_athletemonitoring_table <- function(object,
     names_prefix = "historical."
   )
 
-  plot_data <- tidyr::pivot_wider(
-    dplyr::arrange(plot_data, athlete, variable, estimator),
-    names_from = "estimator",
-    values_from = "value",
-    names_prefix = ""
-  ) %>%
-    # Filter out latest values
-    dplyr::group_by(athlete, variable) %>%
-    dplyr::filter(date == max(date)) %>%
-    dplyr::ungroup()
+  if (object$type == "nominal") {
+    plot_data <- tidyr::pivot_wider(
+      dplyr::arrange(plot_data, athlete, variable, level, estimator),
+      names_from = "estimator",
+      values_from = "value",
+      names_prefix = ""
+    ) %>%
+      # Filter out latest values
+      dplyr::group_by(athlete, variable, level) %>%
+      dplyr::filter(date == max(date)) %>%
+      dplyr::ungroup()
 
-  # Merge together
+    # Merge together
+    plot_data <- dplyr::left_join(plot_data, historical_data, by = c("athlete", "variable", "level"))
 
-  plot_data <- dplyr::left_join(plot_data, historical_data, by = c("athlete", "variable"))
+    # Re arrange columns
+    n_estimators <- ncol(historical_data) - 3
+    re_arranged_cols <- numeric()
+    for (i in seq(1, n_estimators)) {
+      re_arranged_cols <- c(re_arranged_cols, i + n_estimators, i)
+    }
+    plot_data <- plot_data[c(1:4, re_arranged_cols + 4)]
 
-  # Re arrange columns
-  n_estimators <- ncol(historical_data) - 2
-  re_arranged_cols <- numeric()
-  for (i in seq(1, n_estimators)) {
-    re_arranged_cols <- c(re_arranged_cols, i + n_estimators, i)
+  } else {
+    # Numerical
+    plot_data <- tidyr::pivot_wider(
+      dplyr::arrange(plot_data, athlete, variable, estimator),
+      names_from = "estimator",
+      values_from = "value",
+      names_prefix = ""
+    ) %>%
+      # Filter out latest values
+      dplyr::group_by(athlete, variable) %>%
+      dplyr::filter(date == max(date)) %>%
+      dplyr::ungroup()
+
+    # Merge together
+    plot_data <- dplyr::left_join(plot_data, historical_data, by = c("athlete", "variable"))
+
+    # Re arrange columns
+    n_estimators <- ncol(historical_data) - 2
+    re_arranged_cols <- numeric()
+    for (i in seq(1, n_estimators)) {
+      re_arranged_cols <- c(re_arranged_cols, i + n_estimators, i)
+    }
+
+    plot_data <- plot_data[c(1:3, re_arranged_cols + 3)]
   }
-
-  plot_data <- plot_data[c(1:3, re_arranged_cols + 3)]
 
   # Create table
   out <- formattable::formattable(
