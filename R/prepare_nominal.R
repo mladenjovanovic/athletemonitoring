@@ -152,6 +152,11 @@ prepare_nominal <- function(data,
       )
     )
 
+    # When there is only one estimator, the zoo::rollapply screws up
+    # the name
+    colnames(acute_df) <- names(rolling_estimators(1:100))
+
+
     # Check is amount of data in 'value' is smaller than rolling window
     # Since zoo::rollapply will not return names estimators
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -172,6 +177,10 @@ prepare_nominal <- function(data,
         align = "right"
       )
     )
+
+    # When there is only one estimator, the zoo::rollapply screws up
+    # the name
+    colnames(chronic_df) <- names(rolling_estimators(1:100))
 
     # Check is amount of data in 'value' is smaller than rolling window
     # Since zoo::rollapply will not return names estimators
