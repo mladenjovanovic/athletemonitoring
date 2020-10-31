@@ -133,10 +133,10 @@ prepare_nominal <- function(data,
       missing_day = sum(missing_day),
       value = day_aggregate(value)
       ) %>%
-
     # Create proportion
     dplyr::group_by(athlete, date, variable) %>%
-    dplyr::mutate(proportion = value / sum(value))
+    dplyr::mutate(
+      proportion = value / sum(value))
 
   # Rolling function
   # =================
