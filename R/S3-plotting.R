@@ -223,16 +223,26 @@ plot_athletemonitoring_line <- function(object,
   variable <- NULL
   estimator <- NULL
   value <- NULL
+  level <- NULL
   group_lower <- NULL
   group_central <- NULL
   group_upper <- NULL
   # +++++++++++++++++++++++++++++++++++++++++++
 
-  plot_data <- dplyr::left_join(
-    object$data_long,
-    object$group_summary,
-    by = c("date", "variable", "estimator")
-  )
+  if (object$type == "nominal") {
+    plot_data <- dplyr::left_join(
+      object$data_long,
+      object$group_summary,
+      by = c("date", "variable", "estimator", "level")
+    )
+  } else {
+    plot_data <- dplyr::left_join(
+      object$data_long,
+      object$group_summary,
+      by = c("date", "variable", "estimator")
+    )
+  }
+
 
   plot_data <- plot_data %>%
     # Filter last_n
@@ -252,6 +262,13 @@ plot_athletemonitoring_line <- function(object,
     plot_data <- plot_data %>%
       dplyr::filter(variable %in% variable_name) %>%
       dplyr::mutate(variable = factor(variable, levels = variable_name))
+  }
+
+  # If provided, filter level
+  if (!is.null(level_name) & object$type == "nominal") {
+    plot_data <- plot_data %>%
+      dplyr::filter(level %in% level_name) %>%
+      dplyr::mutate(level = factor(level, levels = level_name))
   }
 
   # If provided, filter estimator
@@ -283,8 +300,13 @@ plot_athletemonitoring_line <- function(object,
 
   # Add trellis
   if (trellis == TRUE) {
-    gg <- gg +
-      ggplot2::facet_wrap(~ variable + estimator, scales = "free_y")
+    if (object$type == "nominal") {
+      gg <- gg +
+        ggplot2::facet_wrap(~ variable + level + estimator, scales = "free_y")
+    } else {
+      gg <- gg +
+        ggplot2::facet_wrap(~ variable + estimator, scales = "free_y")
+    }
   }
 
   return(gg)
@@ -294,6 +316,8 @@ plot_athletemonitoring_line <- function(object,
 plot_athletemonitoring_bar <- function(object,
                                        athlete_name = NULL,
                                        variable_name = NULL,
+                                       label_name = NULL,
+                                       level_name = NULL,
                                        acute_name = NULL,
                                        chronic_name = NULL,
                                        last_n = 42,
@@ -303,6 +327,7 @@ plot_athletemonitoring_bar <- function(object,
   # Code chunk for dealing with R CMD check note
   athlete <- NULL
   variable <- NULL
+  level <- NULL
   variable.value <- NULL
   acute <- NULL
   chronic <- NULL
@@ -330,6 +355,13 @@ plot_athletemonitoring_bar <- function(object,
       dplyr::mutate(variable = factor(variable, levels = variable_name))
   }
 
+  # If provided, filter level
+  if (!is.null(level_name) & object$type == "nominal") {
+    plot_data <- plot_data %>%
+      dplyr::filter(level %in% level_name) %>%
+      dplyr::mutate(level = factor(level, levels = level_name))
+  }
+
   # Add acute/chronic information
   plot_data$acute <- as.numeric(NA) # plot_data$variable.value
   plot_data$chronic <- as.numeric(NA) # plot_data$variable.value
@@ -337,40 +369,79 @@ plot_athletemonitoring_bar <- function(object,
   if (!is.null(acute_name)) plot_data$acute <- plot_data[[acute_name]]
   if (!is.null(chronic_name)) plot_data$chronic <- plot_data[[chronic_name]]
 
-  # if athlete not provided, but no trellis, take the mean
-  is_averaged <- FALSE
-  if (is.null(athlete_name) & trellis == FALSE) {
-    message("Plotting average across athletes. Please select athlete or use `trellis=TRUE`")
-    plot_data <- plot_data %>%
-      dplyr::group_by(date, variable) %>%
-      dplyr::summarise(
-        variable.value = mean(variable.value, na.rm = TRUE),
-        acute = mean(acute, na.rm = TRUE),
-        chronic = mean(chronic, na.rm = TRUE)
-      )
-    is_averaged <- TRUE
-  }
+  if (object$type == "nominal") {
+    # if athlete not provided, but no trellis, take the mean
+    is_averaged <- FALSE
+    if (is.null(athlete_name) & trellis == FALSE) {
+      message("Plotting average across athletes. Please select athlete or use `trellis=TRUE`")
+      plot_data <- plot_data %>%
+        dplyr::group_by(date, variable, level) %>%
+        dplyr::summarise(
+          variable.value = mean(variable.value, na.rm = TRUE),
+          acute = mean(acute, na.rm = TRUE),
+          chronic = mean(chronic, na.rm = TRUE)
+        )
+      is_averaged <- TRUE
+    }
 
-  gg <- ggplot2::ggplot(
-    plot_data,
-    ggplot2::aes(x = date, y = variable.value, group = variable)
-  ) +
-    ggplot2::geom_bar(stat = "identity", position = "dodge", alpha = 0.8) +
-    ggplot2::geom_line(ggplot2::aes(y = acute), color = "black") +
-    ggplot2::geom_line(ggplot2::aes(y = chronic), color = "black", linetype = "dashed") +
-    ggplot2::xlab(NULL) +
-    ggplot2::ylab(NULL)
+    gg <- ggplot2::ggplot(
+      plot_data,
+      ggplot2::aes(x = date, y = variable.value, group = variable)
+    ) +
+      ggplot2::geom_bar(stat = "identity", position = "dodge", alpha = 0.8) +
+      ggplot2::geom_line(ggplot2::aes(y = acute), color = "black") +
+      ggplot2::geom_line(ggplot2::aes(y = chronic), color = "black", linetype = "dashed") +
+      ggplot2::xlab(NULL) +
+      ggplot2::ylab(NULL)
 
-  # If averaged and more than one variable, then add trellis
-  if (is.null(variable_name) & is_averaged == TRUE) {
-    gg <- gg +
-      ggplot2::facet_wrap(~variable, scales = "free_y")
-  }
+    # If averaged and more than one variable, then add trellis
+    if (is.null(variable_name) & is.null(level_name) & is_averaged == TRUE) {
+      gg <- gg +
+        ggplot2::facet_wrap(~ variable + level, scales = "free_y")
+    }
 
-  # Add trellis
-  if (trellis == TRUE) {
-    gg <- gg +
-      ggplot2::facet_wrap(~ athlete + variable, scales = "free_y")
+    # Add trellis
+    if (trellis == TRUE) {
+      gg <- gg +
+        ggplot2::facet_wrap(~ athlete + variable + level, scales = "free_y")
+    }
+  } else {
+    # Numeric
+    # if athlete not provided, but no trellis, take the mean
+    is_averaged <- FALSE
+    if (is.null(athlete_name) & trellis == FALSE) {
+      message("Plotting average across athletes. Please select athlete or use `trellis=TRUE`")
+      plot_data <- plot_data %>%
+        dplyr::group_by(date, variable) %>%
+        dplyr::summarise(
+          variable.value = mean(variable.value, na.rm = TRUE),
+          acute = mean(acute, na.rm = TRUE),
+          chronic = mean(chronic, na.rm = TRUE)
+        )
+      is_averaged <- TRUE
+    }
+
+    gg <- ggplot2::ggplot(
+      plot_data,
+      ggplot2::aes(x = date, y = variable.value, group = variable)
+    ) +
+      ggplot2::geom_bar(stat = "identity", position = "dodge", alpha = 0.8) +
+      ggplot2::geom_line(ggplot2::aes(y = acute), color = "black") +
+      ggplot2::geom_line(ggplot2::aes(y = chronic), color = "black", linetype = "dashed") +
+      ggplot2::xlab(NULL) +
+      ggplot2::ylab(NULL)
+
+    # If averaged and more than one variable, then add trellis
+    if (is.null(variable_name) & is_averaged == TRUE) {
+      gg <- gg +
+        ggplot2::facet_wrap(~variable, scales = "free_y")
+    }
+
+    # Add trellis
+    if (trellis == TRUE) {
+      gg <- gg +
+        ggplot2::facet_wrap(~ athlete + variable, scales = "free_y")
+    }
   }
 
   return(gg)
@@ -527,7 +598,6 @@ plot_athletemonitoring_table <- function(object,
       re_arranged_cols <- c(re_arranged_cols, i + n_estimators, i)
     }
     plot_data <- plot_data[c(1:4, re_arranged_cols + 4)]
-
   } else {
     # Numerical
     plot_data <- tidyr::pivot_wider(
