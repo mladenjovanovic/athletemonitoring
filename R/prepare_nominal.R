@@ -105,7 +105,6 @@ prepare_nominal <- function(data,
     # Fill in missing days
     dplyr::mutate(value = ifelse(missing_day, NA_day, value))
 
-
   # Create wide version
   data <- data %>%
     dplyr::group_by(athlete, date, variable) %>%
@@ -116,6 +115,11 @@ prepare_nominal <- function(data,
                   "missing_entry", "missing_day"),
       names_from = "value"
     )
+
+  # Remove NA to maintain the ratio between levels
+  if (is.na(NA_day) | is.na(NA_session)) {
+    data$`NA` <- NULL
+  }
 
   data[-(1:6)] <- ifelse(is.na(data[-(1:6)]), 0, 1)
 
