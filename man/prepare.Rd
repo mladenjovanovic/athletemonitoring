@@ -23,8 +23,7 @@ prepare(
   group_summary_estimators = function(x) {     c(median = stats::median(x, na.rm =
     TRUE), lower = stats::quantile(x, 0.25, na.rm = TRUE)[[1]], upper =
     stats::quantile(x, 0.75, na.rm = TRUE)[[1]]) },
-  iter = TRUE,
-  ...
+  iter = TRUE
 )
 }
 \arguments{
@@ -58,8 +57,6 @@ to be either \code{Date} or \code{numeric} class}
 \item{group_summary_estimators}{Function providing group summary estimators. See Details}
 
 \item{iter}{Should progress be shown? Default is \code{TRUE}}
-
-\item{...}{Extra arguments. See Details}
 }
 \value{
 Object of class \code{athletemonitoring}

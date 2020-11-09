@@ -12,8 +12,7 @@ prepare_nominal <- function(data,
                             rolling_estimators,
                             posthoc_estimators,
                             group_summary_estimators,
-                            iter,
-                            use_counts = FALSE) {
+                            iter) {
 
   # +++++++++++++++++++++++++++++++++++++++++++
   # Code chunk for dealing with R CMD check note
@@ -132,11 +131,7 @@ prepare_nominal <- function(data,
       missing_entry = sum(missing_entry),
       missing_day = sum(missing_day),
       value = day_aggregate(value)
-      ) %>%
-    # Create proportion
-    dplyr::group_by(athlete, date, variable) %>%
-    dplyr::mutate(
-      proportion = value / sum(value))
+      )
 
   # Rolling function
   # =================
@@ -203,26 +198,13 @@ prepare_nominal <- function(data,
   data <- data %>%
     dplyr::group_by(athlete, variable, level) %>%
     # Arrange/Sort
-    dplyr::arrange(date)
-
-  # Generate rolling estimators
-  if (use_counts) {
-    # Use counts
-    data <- data %>%
-      dplyr::mutate(
-        roll_func(value, date)
-      )
-  } else {
-    # Use proportions
-    data <- data %>%
-      dplyr::mutate(
-        roll_func(proportion, date)
-      )
-  }
+    dplyr::arrange(date) %>%
+    # Generate rolling estimators
+    dplyr::mutate(roll_func(value, date))
 
   data <- data %>%
     dplyr::ungroup() %>%
-    dplyr::select(-value, -proportion) %>%
+    dplyr::select(-value) %>%
     dplyr::relocate(athlete, date, variable, level, missing_entry, missing_day) %>%
     dplyr::arrange(athlete, date, variable, level)
 
@@ -350,8 +332,7 @@ prepare_nominal <- function(data,
       rolling_fill = rolling_fill,
       rolling_estimators = rolling_estimators,
       posthoc_estimators = posthoc_estimators,
-      group_summary_estimators = group_summary_estimators,
-      use_counts = use_counts
+      group_summary_estimators = group_summary_estimators
     )
   )
 }

@@ -19,7 +19,6 @@
 #' @param posthoc_estimators Function providing post-hoc estimators. See Details
 #' @param group_summary_estimators Function providing group summary estimators. See Details
 #' @param iter Should progress be shown? Default is \code{TRUE}
-#' @param ... Extra arguments. See Details
 #'
 #' @return Object of class \code{athletemonitoring}
 #' @export
@@ -237,8 +236,7 @@ prepare <- function(data,
                         "upper" = stats::quantile(x, 0.75, na.rm = TRUE)[[1]]
                       )
                     },
-                    iter = TRUE,
-                    ...) {
+                    iter = TRUE) {
   if (is.numeric(data[[value]])) {
     # Numeric
     prepare_numeric(
@@ -287,8 +285,7 @@ prepare <- function(data,
       rolling_estimators = rolling_estimators,
       posthoc_estimators = posthoc_estimators,
       group_summary_estimators = group_summary_estimators,
-      iter = iter,
-      ...
+      iter = iter
     )
   }
 }
