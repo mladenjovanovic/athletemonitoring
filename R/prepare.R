@@ -264,8 +264,7 @@ prepare <- function(data,
           "Using nominal approach: ",
           "column 'value' in the 'data' provided is not numeric. ",
           "It will be treated as nominal and each level will be analyzed as separate ",
-          "variable using rolling proportions or counts approach. ",
-          "To use rolling counts, set 'use_counts=TRUE'.\n"
+          "variable using rolling counts approach.\n"
         )
       )
     }
