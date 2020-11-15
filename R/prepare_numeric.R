@@ -101,9 +101,6 @@ prepare_numeric <- function(data,
       )
     )
 
-    # When there is only one estimator, the zoo::rollapply screws up
-    # the name
-    colnames(acute_df) <- names(rolling_estimators(1:100))
 
     # Check is amount of data in 'value' is smaller than rolling window
     # Since zoo::rollapply will not return names estimators
@@ -113,7 +110,9 @@ prepare_numeric <- function(data,
       acute_df <- as.data.frame(t(acute_df))
     }
 
-    colnames(acute_df) <- paste0("acute.", colnames(acute_df))
+    # When there is only one estimator, the zoo::rollapply screws up
+    # the name
+    colnames(acute_df) <- paste0("acute.", names(rolling_estimators(1:100)))
 
     # Chronic
     chronic_df <- data.frame(
@@ -126,10 +125,6 @@ prepare_numeric <- function(data,
       )
     )
 
-    # When there is only one estimator, the zoo::rollapply screws up
-    # the name
-    colnames(chronic_df) <- names(rolling_estimators(1:100))
-
     # Check is amount of data in 'value' is smaller than rolling window
     # Since zoo::rollapply will not return names estimators
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -138,7 +133,9 @@ prepare_numeric <- function(data,
       chronic_df <- as.data.frame(t(chronic_df))
     }
 
-    colnames(chronic_df) <- paste0("chronic.", colnames(chronic_df))
+    # When there is only one estimator, the zoo::rollapply screws up
+    # the name
+    colnames(chronic_df) <- paste0("chronic.", names(rolling_estimators(1:100)))
 
     # merge together
     data.frame(date = date, variable.value = value, acute_df, chronic_df)
