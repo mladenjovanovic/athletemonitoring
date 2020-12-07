@@ -92,19 +92,19 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the released version of <code>athletemonitoring</code> from <a href="https://CRAN.R-project.org">CRAN</a> when it is available with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"athletemonitoring"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"athletemonitoring"</span><span class="op">)</span></code></pre></div>
 <p>And the development version from <a href="https://github.com/">GitHub</a> with:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"mladenjovanovic/athletemonitoring"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"mladenjovanovic/athletemonitoring"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
 <p>To be added, but while you wait, here is the example from the documentation:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mladenjovanovic/athletemonitoring">athletemonitoring</a></span><span class="op">)</span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mladenjovanovic/athletemonitoring">athletemonitoring</a></span><span class="op">)</span>
 <span class="co">#&gt; Loading required package: athletemonitoring</span>
 
 <span class="co"># Load monitoring data set</span>
@@ -237,20 +237,20 @@
 <span class="co">#&gt; Plotting average across athletes. Please select athlete or use `trellis=TRUE`</span>
 <span class="co">#&gt; Warning: Removed 42 row(s) containing missing values (geom_path).</span>
 
-<span class="co">#&gt; Warning: Removed 42 row(s) containing missing values (geom_path).</span></pre></div>
+<span class="co">#&gt; Warning: Removed 42 row(s) containing missing values (geom_path).</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-1.png" width="100%"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
 <span class="co"># To plot per athlete, use trellis argument</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>
   <span class="va">prepared_data</span>,
   type <span class="op">=</span> <span class="st">"bar"</span>,
   trellis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt; Warning: Removed 420 row(s) containing missing values (geom_path).</span>
-<span class="co">#&gt; Warning: Removed 420 row(s) containing missing values (geom_path).</span></pre></div>
+<span class="co">#&gt; Warning: Removed 420 row(s) containing missing values (geom_path).</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-2.png" width="100%"></p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
 <span class="co"># To filter out athletem variable and add Acute and Chronic lines to the group average:</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>
   <span class="va">prepared_data</span>,
@@ -270,10 +270,10 @@
 
   <span class="co"># Plot last n entries/days</span>
   last_n <span class="op">=</span> <span class="fl">42</span><span class="op">)</span>
-<span class="co">#&gt; Plotting average across athletes. Please select athlete or use `trellis=TRUE`</span></pre></div>
+<span class="co">#&gt; Plotting average across athletes. Please select athlete or use `trellis=TRUE`</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-3.png" width="100%"></p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
 <span class="co"># If you want to plot for each athlete, use trellis=TRUE</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>
   <span class="va">prepared_data</span>,
@@ -281,10 +281,10 @@
   acute_name <span class="op">=</span> <span class="st">"acute.mean"</span>,
   chronic_name <span class="op">=</span> <span class="st">"chronic.mean"</span>,
   last_n <span class="op">=</span> <span class="fl">42</span>,
-  trellis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
+  trellis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-4.png" width="100%"></p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
 <span class="co"># Line plots</span>
 <span class="co"># These plots represent summary of the rollins estimators</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>
@@ -312,10 +312,10 @@
   group_upper_name <span class="op">=</span> <span class="st">"group.upper"</span>,
 
   <span class="co"># Use trellis if you do not plot for a single individual</span>
-  trellis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
+  trellis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-5.png" width="100%"></p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
 <span class="co"># Previous chart looks messy because it plot all athletes</span>
 <span class="co"># To avoid that, filter out only one athlete</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>
@@ -328,14 +328,14 @@
  group_lower_name <span class="op">=</span> <span class="st">"group.lower"</span>,
  group_central_name <span class="op">=</span> <span class="st">"group.median"</span>,
  group_upper_name <span class="op">=</span> <span class="st">"group.upper"</span>,
-  trellis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
+  trellis <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-6.png" width="100%"></p>
 <div id="example-for-nominal-scale" class="section level3">
 <h3 class="hasAnchor">
 <a href="#example-for-nominal-scale" class="anchor"></a>Example for nominal scale</h3>
 <p>Example and documentation in development, but here is an example (graphs not ready yet)</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="co"># Create nominal variable</span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Create nominal variable</span>
 <span class="va">monitoring</span><span class="op">$</span><span class="va">Value_nominal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span><span class="op">(</span>
   <span class="va">monitoring</span><span class="op">$</span><span class="va">Value</span>,
   breaks <span class="op">=</span> <span class="fl">5</span>,
@@ -418,7 +418,7 @@
 <span class="co">#&gt; Very Easy, Easy, Medium, Hard, Very Hard, &lt;&lt;&lt;Day Missed&gt;&gt;&gt;, &lt;&lt;&lt;Session Missed&gt;&gt;&gt; </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; 10 estimators:</span>
-<span class="co">#&gt; variable.value, acute.mean, acute.sd, acute.cv, chronic.mean, chronic.sd, chronic.cv, ACD, ACR, ES</span></pre></div>
+<span class="co">#&gt; variable.value, acute.mean, acute.sd, acute.cv, chronic.mean, chronic.sd, chronic.cv, ACD, ACR, ES</span></code></pre></div>
 </div>
 </div>
 </div>

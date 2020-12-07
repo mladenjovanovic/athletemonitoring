@@ -212,7 +212,7 @@
     <span class='op'>)</span>
   <span class='op'>}</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='message'>Preparing data...</span></div><div class='output co'>#&gt; <span class='message'>Rolling...</span></div><div class='output co'>#&gt; <span class='message'>Group summaries...</span></div><div class='output co'>#&gt; <span class='message'>Missing data summaries...</span></div><div class='output co'>#&gt; <span class='message'>Done!</span></div><div class='input'>
 <span class='co'># Get summary</span>
 <span class='va'>prepared_data</span>
 </div><div class='output co'>#&gt; Athlete monitoring numeric data with the following characteristics:
@@ -223,26 +223,29 @@
 #&gt; 363 days:
 #&gt; From 18263 to 18625 
 #&gt; 
+#&gt; 0 missing entries
+#&gt; 510 missing days
+#&gt; 
 #&gt; 1 variables:
 #&gt; Training Load 
 #&gt; 
 #&gt; 10 estimators:
 #&gt; variable.value, acute.mean, acute.sd, acute.cv, chronic.mean, chronic.sd, chronic.cv, ACD, ACR, ES</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>prepared_data</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 10 x 13</span><span>
-#&gt;    athlete variable `Day entries` Missing `Start date` `Stop date`  Mean    SD
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span> Alan M… Trainin…           363       0 2020-01-02   2020-12-29  174.  142. 
-#&gt; </span><span style='color: #555555;'> 2</span><span> Ann Wh… Trainin…           363       0 2020-01-02   2020-12-29  303.  260. 
-#&gt; </span><span style='color: #555555;'> 3</span><span> Eve Bl… Trainin…           363       0 2020-01-02   2020-12-29  344.  276. 
-#&gt; </span><span style='color: #555555;'> 4</span><span> Frank … Trainin…           363       0 2020-01-02   2020-12-29  188.  162. 
-#&gt; </span><span style='color: #555555;'> 5</span><span> John D… Trainin…           363       0 2020-01-02   2020-12-29  234.  214. 
-#&gt; </span><span style='color: #555555;'> 6</span><span> Michae… Trainin…           363       0 2020-01-02   2020-12-29  152.  167. 
-#&gt; </span><span style='color: #555555;'> 7</span><span> Mike S… Trainin…           363       0 2020-01-02   2020-12-29  442.  365. 
-#&gt; </span><span style='color: #555555;'> 8</span><span> Peter … Trainin…           363       0 2020-01-02   2020-12-29  404.  346. 
-#&gt; </span><span style='color: #555555;'> 9</span><span> Stuart… Trainin…           363       0 2020-01-02   2020-12-29  152.  129. 
-#&gt; </span><span style='color: #555555;'>10</span><span> Susan … Trainin…           363       0 2020-01-02   2020-12-29   75.3  70.7
-#&gt; </span><span style='color: #555555;'># … with 5 more variables: Min </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, Max </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, Median </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, IQR </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
-#&gt; </span><span style='color: #555555;'>#   MAD </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span></div><div class='input'>
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 10 x 14</span><span>
+#&gt;    athlete variable `Day entries` `Missing entrie… `Missing days` `Start date`
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>      
+#&gt; </span><span style='color: #555555;'> 1</span><span> Alan M… Trainin…           363                0             51 2020-01-02  
+#&gt; </span><span style='color: #555555;'> 2</span><span> Ann Wh… Trainin…           363                0             51 2020-01-02  
+#&gt; </span><span style='color: #555555;'> 3</span><span> Eve Bl… Trainin…           363                0             51 2020-01-02  
+#&gt; </span><span style='color: #555555;'> 4</span><span> Frank … Trainin…           363                0             51 2020-01-02  
+#&gt; </span><span style='color: #555555;'> 5</span><span> John D… Trainin…           363                0             51 2020-01-02  
+#&gt; </span><span style='color: #555555;'> 6</span><span> Michae… Trainin…           363                0             51 2020-01-02  
+#&gt; </span><span style='color: #555555;'> 7</span><span> Mike S… Trainin…           363                0             51 2020-01-02  
+#&gt; </span><span style='color: #555555;'> 8</span><span> Peter … Trainin…           363                0             51 2020-01-02  
+#&gt; </span><span style='color: #555555;'> 9</span><span> Stuart… Trainin…           363                0             51 2020-01-02  
+#&gt; </span><span style='color: #555555;'>10</span><span> Susan … Trainin…           363                0             51 2020-01-02  
+#&gt; </span><span style='color: #555555;'># … with 8 more variables: `Stop date` </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span style='color: #555555;'>, Mean </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, SD </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, Min </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   Max </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, Median </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, IQR </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, MAD </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span></div><div class='input'>
 
 <span class='co'>## Plots</span>
 
