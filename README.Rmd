@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 [![CRAN status](https://www.r-pkg.org/badges/version/athletemonitoring)](https://CRAN.R-project.org/package=athletemonitoring)
 <!-- badges: end -->
 
-Athlete monitoring data often comes in a form of time series or panel data. The goal of `athletemonitoring` package is to help in preparing these types of datasets using contemporary best practices which involve dealing with missing values, aggregating data on a day-level, creating rolling averages and finally providing visualizations.
+Athlete monitoring data often comes in a form of time series or panel data. The goal of `athletemonitoring` package is to help in preparing these types of datasets using contemporary best practices which involve dealing with missing values, aggregating data on a day-level, creating rolling averages and finally providing visualizations. 
 
 ## Installation
 

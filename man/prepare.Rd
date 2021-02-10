@@ -206,7 +206,7 @@ plot(
 )
 
 # Line plots
-# These plots represent summary of the rollins estimators
+# These plots represent summary of the rolling estimators
 plot(
   prepared_data,
   type = "line",
