@@ -524,9 +524,9 @@ plot_athletemonitoring_table <- function(object,
       estimator_name <- c("variable.value", estimator_name)
     }
 
-    estimator_name <- factor(estimator_name)
-    estimator_name <- stats::relevel(estimator_name, ref = "variable.value")
-    estimator_name <- levels(estimator_name)
+    estimator_name <- factor(estimator_name, levels = estimator_name)
+    #estimator_name <- stats::relevel(estimator_name, ref = "variable.value")
+    #estimator_name <- levels(estimator_name)
 
     plot_data <- plot_data %>%
       dplyr::filter(estimator %in% estimator_name) %>%
