@@ -90,7 +90,7 @@ print.athletemonitoring <- function(x, ...) {
 
   if (x$type == "nominal") {
     cat(length(unique(x$data_wide$level)), "levels:\n")
-    cat(paste(levels(x$data_wide$level), collapse = ", "), "\n\n")
+    cat(paste(unique(x$data_wide$level), collapse = ", "), "\n\n")
   }
 
   cat(length(unique(x$data_long$estimator)), "estimators:\n")
