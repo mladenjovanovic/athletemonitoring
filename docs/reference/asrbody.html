@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • athletemonitoring</title>
+<title>AthleteSR Body Diagram polygons — asrbody • athletemonitoring</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,9 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="AthleteSR Body Diagram polygons — asrbody" />
+<meta property="og:description" content="Originally created by Jose Fernandez, this dataset contains AthleteSR
+body diagram definition used for plotting." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -66,7 +68,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -116,72 +118,36 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>AthleteSR Body Diagram polygons</h1>
+    <small class="dont-index">Source: <a href='https://github.com/mladenjovanovic/athletemonitoring/blob/master/R/asrbody-data.R'><code>R/asrbody-data.R</code></a></small>
+    <div class="hidden name"><code>asrbody.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Originally created by Jose Fernandez, this dataset contains AthleteSR
+body diagram definition used for plotting.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>asrbody</span><span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="asrbody.html">asrbody</a></code> </p>
-        </td>
-        <td><p>AthleteSR Body Diagram polygons</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="monitoring.html">monitoring</a></code> </p>
-        </td>
-        <td><p>Monitoring Data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot.athletemonitoring.html">plot(<i>&lt;athletemonitoring&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>S3 method for plotting <code>prepare</code> results</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="prepare.html">prepare()</a></code> </p>
-        </td>
-        <td><p>Prepare Athlete Monitoring Data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="print.athletemonitoring.html">print(<i>&lt;athletemonitoring&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>S3 method for printing <code>prepare</code> results</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="summary.athletemonitoring.html">summary(<i>&lt;athletemonitoring&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>S3 method for summarizing <code>prepare</code> results</p></td>
-      </tr>
-    </tbody>
-    </table>
+
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+
+    <p>A data frame with 3391 rows and 6 variables:</p><dl>
+<dt>View</dt><dd><p>Body diagram view. Levels are 'Front' and 'Back'</p></dd>
+<dt>Side</dt><dd><p>Body diagram side. Levels are 'Left' and 'Right'</p></dd>
+<dt>Part</dt><dd><p>Name of the body diagram part. Contains 26 distincts parts</p></dd>
+<dt>Area</dt><dd><p>Name of the body diagram area. Represents <code>Veiw</code> +
+<code>Side</code> + <code>Part</code>. Contains 74 distinct areas</p></dd>
+<dt>x</dt><dd><p>x coordinate of the polygon</p></dd>
+<dt>y</dt><dd><p>y coordinate of the polygon</p></dd>
+
+</dl>
+
+
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
