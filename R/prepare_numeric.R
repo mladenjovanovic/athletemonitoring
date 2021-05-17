@@ -16,6 +16,7 @@ prepare_numeric <- function(data,
 
   # +++++++++++++++++++++++++++++++++++++++++++
   # Code chunk for dealing with R CMD check note
+  entries <- NULL
   missing_day <- NULL
   missing_entry <- NULL
   proportion <- NULL
@@ -49,6 +50,7 @@ prepare_numeric <- function(data,
 
     # Aggregate to day value
     dplyr::summarise(
+      entries = dplyr::n(),
       missing_entry = sum(missing_entry),
       value = day_aggregate(value)) %>%
 
@@ -154,6 +156,7 @@ prepare_numeric <- function(data,
 
     # Tag missing day
     dplyr::mutate(missing_day = is.na(start_date)) %>%
+
     tidyr::fill(start_date, stop_date, .direction = "up") %>%
     dplyr::filter(date >= start_date & date <= stop_date) %>%
     dplyr::select(-start_date, -stop_date) %>%
@@ -161,13 +164,16 @@ prepare_numeric <- function(data,
     # Fill in missing days
     dplyr::mutate(value = ifelse(missing_day, NA_day, value)) %>%
 
+    # Count entries
+    dplyr::mutate(entries = ifelse(is.na(entries), 0, entries)) %>%
+
     # Generate rolling estimators
     dplyr::mutate(
       roll_func(value, date)
     ) %>%
     dplyr::ungroup() %>%
     dplyr::select(-value) %>%
-    dplyr::relocate(athlete, date, variable, missing_entry, missing_day) %>%
+    dplyr::relocate(athlete, date, variable, entries, missing_entry, missing_day) %>%
     dplyr::arrange(athlete, date, variable) %>%
     dplyr::mutate(missing_day = as.numeric(missing_day))
 
@@ -177,7 +183,7 @@ prepare_numeric <- function(data,
   # Create long  version
   data_long <- tidyr::pivot_longer(
     data,
-    cols = -(1:5),
+    cols = -(1:6),
     names_to = "estimator",
     values_to = "value"
   )

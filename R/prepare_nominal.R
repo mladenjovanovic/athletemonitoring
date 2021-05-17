@@ -16,6 +16,7 @@ prepare_nominal <- function(data,
 
   # +++++++++++++++++++++++++++++++++++++++++++
   # Code chunk for dealing with R CMD check note
+  entries <- NULL
   missing_day <- NULL
   missing_entry <- NULL
   level <- NULL
@@ -132,6 +133,7 @@ prepare_nominal <- function(data,
     dplyr::group_by(athlete, date, variable, level) %>%
     # Aggregate to day value
     dplyr::summarise(
+      entries = dplyr::n(),
       missing_entry = sum(missing_entry),
       missing_day = sum(missing_day),
       value = day_aggregate(value)
@@ -204,7 +206,7 @@ prepare_nominal <- function(data,
   data <- data %>%
     dplyr::ungroup() %>%
     dplyr::select(-value) %>%
-    dplyr::relocate(athlete, date, variable, level, missing_entry, missing_day) %>%
+    dplyr::relocate(athlete, date, variable, level, entries, missing_entry, missing_day) %>%
     dplyr::arrange(athlete, date, variable, level)
 
   # Apply post-hoc estimators
@@ -213,7 +215,7 @@ prepare_nominal <- function(data,
   # Create long  version
   data_long <- tidyr::pivot_longer(
     data,
-    cols = -(1:6),
+    cols = -(1:7),
     names_to = "estimator",
     values_to = "value"
   )
