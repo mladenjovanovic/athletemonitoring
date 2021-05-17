@@ -9,7 +9,8 @@
 \arguments{
 \item{x}{Object of class \code{athletemonitoring}}
 
-\item{type}{Type of the graph. Use "Bar" or "Line" (default). See Details}
+\item{type}{Type of the graph. Use "bar", "calendar",
+"table" or "line" (default). See Examples}
 
 \item{...}{Extra arguments. See Details}
 }
@@ -192,7 +193,6 @@ plot(
 
   # To filter out athletes
   athlete_name = "Ann Whitaker",
-
   group_lower_name = "group.lower",
   group_central_name = "group.median",
   group_upper_name = "group.upper",

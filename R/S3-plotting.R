@@ -3,7 +3,8 @@
 #' This function plots the selected estimator
 #'
 #' @param x Object of class \code{athletemonitoring}
-#' @param type Type of the graph. Use "Bar" or "Line" (default). See Details
+#' @param type Type of the graph. Use "bar", "calendar",
+#'      "table" or "line" (default). See Examples
 #' @param ... Extra arguments. See Details
 #' @export
 #' @examples
@@ -182,7 +183,6 @@
 #'
 #'   # To filter out athletes
 #'   athlete_name = "Ann Whitaker",
-#'
 #'   group_lower_name = "group.lower",
 #'   group_central_name = "group.median",
 #'   group_upper_name = "group.upper",
@@ -191,14 +191,16 @@
 plot.athletemonitoring <- function(x,
                                    type = "line",
                                    ...) {
-  if (!(type %in% c("bar", "line", "table"))) {
-    stop("Please use 'bar', 'line', or 'table' for the plot type", call. = FALSE)
+  if (!(type %in% c("bar", "line", "table", "calendar"))) {
+    stop("Please use 'bar', 'line', 'calendar', or'table' for the plot type", call. = FALSE)
   }
 
   if (type == "bar") {
     plot_athletemonitoring_bar(object = x, ...)
   } else if (type == "line") {
     plot_athletemonitoring_line(object = x, ...)
+  } else if (type == "calendar") {
+    plot_athletemonitoring_calendar(object = x, ...)
   } else {
     plot_athletemonitoring_table(object = x, ...)
   }
@@ -316,7 +318,6 @@ plot_athletemonitoring_line <- function(object,
 plot_athletemonitoring_bar <- function(object,
                                        athlete_name = NULL,
                                        variable_name = NULL,
-                                       label_name = NULL,
                                        level_name = NULL,
                                        acute_name = NULL,
                                        chronic_name = NULL,
@@ -525,8 +526,8 @@ plot_athletemonitoring_table <- function(object,
     }
 
     estimator_name <- factor(estimator_name, levels = estimator_name)
-    #estimator_name <- stats::relevel(estimator_name, ref = "variable.value")
-    #estimator_name <- levels(estimator_name)
+    # estimator_name <- stats::relevel(estimator_name, ref = "variable.value")
+    # estimator_name <- levels(estimator_name)
 
     plot_data <- plot_data %>%
       dplyr::filter(estimator %in% estimator_name) %>%
@@ -638,17 +639,97 @@ plot_athletemonitoring_table <- function(object,
   return(out)
 }
 
+# ==================================================
+plot_athletemonitoring_calendar <- function(object,
+                                            athlete_name = NULL,
+                                            variable_name = NULL,
+                                            level_name = NULL,
+                                            estimator_name = "entries",
+                                            last_n = Inf,
+                                            aggregate_func = mean,
+                                            low_color = "blue",
+                                            high_color = "red",
+                                            na_color = "grey50",
+                                            value_label = FALSE) {
+
+  # +++++++++++++++++++++++++++++++++++++++++++
+  # Code chunk for dealing with R CMD check note
+  athlete <- NULL
+  variable <- NULL
+  level <- NULL
+  value <- NULL
+  # +++++++++++++++++++++++++++++++++++++++++++
+
+  plot_data <- object$data_wide
+
+  plot_data <- plot_data %>%
+    # Filter last_n
+    dplyr::group_by(athlete, variable) %>%
+    dplyr::filter(date > max(date) - last_n) %>%
+    dplyr::ungroup()
+
+  # If provided, filter athlete
+  if (!is.null(athlete_name)) {
+    plot_data <- plot_data %>%
+      dplyr::filter(athlete %in% athlete_name) %>%
+      dplyr::mutate(athlete = factor(athlete, levels = athlete_name))
+  }
+
+  # If provided, filter variable
+  if (!is.null(variable_name)) {
+    plot_data <- plot_data %>%
+      dplyr::filter(variable %in% variable_name) %>%
+      dplyr::mutate(variable = factor(variable, levels = variable_name))
+  }
+
+  # If provided, filter level
+  if (!is.null(level_name) & object$type == "nominal") {
+    plot_data <- plot_data %>%
+      dplyr::filter(level %in% level_name) %>%
+      dplyr::mutate(level = factor(level, levels = level_name))
+  }
+
+  # Select the estimator
+  plot_data$value <- plot_data[[estimator_name]]
+
+  # Check if the data is aggregated by checking rows number
+  before_agg <- nrow(plot_data)
+
+  # Create date summary
+  plot_data <- plot_data %>%
+    dplyr::group_by(date) %>%
+    dplyr::summarise(value = aggregate_func(value)) %>%
+    dplyr::ungroup()
+
+  after_agg <- nrow(plot_data)
+
+  if (before_agg != after_agg) {
+    message("Plotting aggregates across athletes, variables and/or levels.")
+  }
+
+  plot_calendar(
+    df = plot_data,
+    low_color = low_color,
+    high_color = high_color,
+    na_color = na_color,
+    value_label = value_label
+  )
+}
+
+
 # ===========================================================
-plot_calendar_generic <- function(df,
-                                  low_color = "blue",
-                                  high_color = "red",
-                                  na_color = "grey50") {
+plot_calendar <- function(df,
+                          low_color = "blue",
+                          high_color = "red",
+                          na_color = "grey50",
+                          value_label = FALSE) {
 
   # Function created thank to Viet Le
   # URL: https://vietle.info/post/calendarheatmap/
 
   # +++++++++++++++++++++++++++++++++++++++++++
   # Code chunk for dealing with R CMD check note
+  label <- NULL
   date <- NULL
   day <- NULL
   year <- NULL
@@ -658,15 +739,20 @@ plot_calendar_generic <- function(df,
   value <- NULL
   # +++++++++++++++++++++++++++++++++++++++++++
 
-
   dfPlot <- df %>%
     dplyr::mutate(
       year = lubridate::year(date),
-      weekday = lubridate::wday(date, label = TRUE, week_start = 1),
+      weekday = lubridate::wday(date, label = TRUE, week_start = 1, abbr = TRUE),
       month = lubridate::month(date, label = TRUE),
       day = lubridate::day(date),
       week = lubridate::isoweek(date)
     )
+
+  if (value_label == TRUE) {
+    dfPlot$label <- dfPlot$value
+  } else {
+    dfPlot$label <- dfPlot$day
+  }
 
   # isoweek makes the last week of the year as week 1, so need to change that to week 53 for the plot
   dfPlot$week[dfPlot$month == "Dec" & dfPlot$week == 1] <- 53
@@ -680,7 +766,7 @@ plot_calendar_generic <- function(df,
   gg <- dfPlot %>%
     ggplot2::ggplot(ggplot2::aes(x = weekday, y = -week, fill = value)) +
     ggplot2::geom_tile(colour = "white") +
-    ggplot2::geom_text(ggplot2::aes(label = day), size = 2.5, color = "black") +
+    ggplot2::geom_text(ggplot2::aes(label = label), size = 2.5, color = "black") +
     ggplot2::theme(
       legend.title = ggplot2::element_blank(),
       axis.title.x = ggplot2::element_blank(),
@@ -690,7 +776,7 @@ plot_calendar_generic <- function(df,
       axis.ticks = ggplot2::element_blank(),
       panel.background = ggplot2::element_blank(),
       strip.background = ggplot2::element_blank(),
-      #strip.text = ggplot2::element_text(face = "bold", size = 8),
+      # strip.text = ggplot2::element_text(face = "bold", size = 8),
       panel.border = ggplot2::element_rect(colour = "grey", fill = NA, size = 1)
     ) +
     ggplot2::scale_fill_gradient(
@@ -703,7 +789,7 @@ plot_calendar_generic <- function(df,
   if (length(unique(dfPlot$year)) == 1) {
     gg <- gg + ggplot2::facet_wrap(~month, scales = "free")
   } else {
-    gg <- gg + ggplot2::facet_wrap(year~month, scales = "free")
+    gg <- gg + ggplot2::facet_wrap(year ~ month, scales = "free")
   }
 
   gg
