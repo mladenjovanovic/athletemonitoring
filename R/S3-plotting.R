@@ -637,3 +637,74 @@ plot_athletemonitoring_table <- function(object,
 
   return(out)
 }
+
+# ===========================================================
+plot_calendar_generic <- function(df,
+                                  low_color = "blue",
+                                  high_color = "red",
+                                  na_color = "grey50") {
+
+  # Function created thank to Viet Le
+  # URL: https://vietle.info/post/calendarheatmap/
+
+  # +++++++++++++++++++++++++++++++++++++++++++
+  # Code chunk for dealing with R CMD check note
+  date <- NULL
+  day <- NULL
+  year <- NULL
+  month <- NULL
+  week <- NULL
+  weekday <- NULL
+  value <- NULL
+  # +++++++++++++++++++++++++++++++++++++++++++
+
+
+  dfPlot <- df %>%
+    dplyr::mutate(
+      year = lubridate::year(date),
+      weekday = lubridate::wday(date, label = TRUE, week_start = 1),
+      month = lubridate::month(date, label = TRUE),
+      day = lubridate::day(date),
+      week = lubridate::isoweek(date)
+    )
+
+  # isoweek makes the last week of the year as week 1, so need to change that to week 53 for the plot
+  dfPlot$week[dfPlot$month == "Dec" & dfPlot$week == 1] <- 53
+
+  dfPlot <- dfPlot %>%
+    dplyr::group_by(year, month) %>%
+    dplyr::mutate(monthweek = 1 + week - min(week)) %>%
+    dplyr::ungroup()
+
+  # Plot
+  gg <- dfPlot %>%
+    ggplot2::ggplot(ggplot2::aes(x = weekday, y = -week, fill = value)) +
+    ggplot2::geom_tile(colour = "white") +
+    ggplot2::geom_text(ggplot2::aes(label = day), size = 2.5, color = "black") +
+    ggplot2::theme(
+      legend.title = ggplot2::element_blank(),
+      axis.title.x = ggplot2::element_blank(),
+      axis.title.y = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_blank(),
+      panel.grid = ggplot2::element_blank(),
+      axis.ticks = ggplot2::element_blank(),
+      panel.background = ggplot2::element_blank(),
+      strip.background = ggplot2::element_blank(),
+      #strip.text = ggplot2::element_text(face = "bold", size = 8),
+      panel.border = ggplot2::element_rect(colour = "grey", fill = NA, size = 1)
+    ) +
+    ggplot2::scale_fill_gradient(
+      low = low_color,
+      high = high_color,
+      na.value = na_color
+    )
+
+  # Create facets
+  if (length(unique(dfPlot$year)) == 1) {
+    gg <- gg + ggplot2::facet_wrap(~month, scales = "free")
+  } else {
+    gg <- gg + ggplot2::facet_wrap(year~month, scales = "free")
+  }
+
+  gg
+}

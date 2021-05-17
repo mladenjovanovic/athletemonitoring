@@ -26,7 +26,8 @@ Imports:
     tidyr,
     magrittr,
     zoo,
-    ggplot2
+    ggplot2,
+    lubridate
 Suggests:
     sparkline,
     formattable,
