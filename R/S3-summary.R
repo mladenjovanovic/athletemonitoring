@@ -77,6 +77,7 @@ summary.athletemonitoring <- function(object, ...) {
 
   # +++++++++++++++++++++++++++++++++++++++++++
   # Code chunk for dealing with R CMD check note
+  entries <- NULL
   athlete <- NULL
   variable <- NULL
   level <- NULL
@@ -92,6 +93,7 @@ summary.athletemonitoring <- function(object, ...) {
       dplyr::mutate(levels_sum = sum(variable.value, na.rm = TRUE)) %>%
       dplyr::group_by(athlete, variable, level) %>%
       dplyr::summarise(
+        `Total entries` = sum(entries),
         `Day entries` = sum(!is.na(variable.value)),
         `Missing entries` = sum(missing_entry),
         `Missing days` = sum(missing_day),
@@ -104,6 +106,7 @@ summary.athletemonitoring <- function(object, ...) {
     summary_table <- object$data_wide %>%
       dplyr::group_by(athlete, variable) %>%
       dplyr::summarise(
+        `Total entries` = sum(entries),
         `Day entries` = sum(!is.na(variable.value)),
         `Missing entries` = sum(missing_entry),
         `Missing days` = sum(missing_day),
