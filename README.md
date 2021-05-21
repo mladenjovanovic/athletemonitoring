@@ -61,23 +61,23 @@ prepared_data <- prepare(
   variable = "Variable",
   value = "Value",
   acute = 7,
-  chronic = 42, 
-  
-  # How should be missing entry treated? 
+  chronic = 42,
+
+  # How should be missing entry treated?
   # What do we assume? Zero load? Let's keep NA
-  NA_session =  NA,
-  
+  NA_session = NA,
+
   # How should missing days (i.e. no entries) be treated?
   # Here we assume no training, hence zero
   NA_day = 0,
-  
+
   # How should be multiple day entries summarised?
   # With "load", it is a "sum", with other metrics that
   # do not aggregate, it can me "mean"
   day_aggregate = function(x) {
     sum(x, na.rm = TRUE)
   },
-  
+
   # Rolling estimators for Acute and Chronic windows
   rolling_estimators = function(x) {
     c(
@@ -86,17 +86,17 @@ prepared_data <- prepare(
       "cv" = sd(x, na.rm = TRUE) / mean(x, na.rm = TRUE)
     )
   },
-  
+
   # Additional estimator post-rolling
   posthoc_estimators = function(data) {
     data$ACD <- data$acute.mean - data$chronic.mean
     data$ACR <- data$acute.mean / data$chronic.mean
     data$ES <- data$ACD / data$chronic.sd
-    
+
     # Make sure to return the data
     return(data)
   },
-  
+
   # Group summary estimators
   group_summary_estimators = function(x) {
     c(
@@ -157,7 +157,7 @@ summary(prepared_data)
 # Table plot
 # Produces formattable output with sparklines
 # This will not work in the readme file, so just copy paste to your console
-#plot(
+# plot(
 #  prepared_data,
 #  type = "table",
 #
@@ -175,13 +175,14 @@ summary(prepared_data)
 #
 #  # Round numbers
 #  digits = 2
-#)
+# )
 
 # Bar plot
 # To plot group average
 plot(
   prepared_data,
-  type = "bar")
+  type = "bar"
+)
 #> Plotting average across athletes. Please select athlete or use `trellis=TRUE`
 #> Warning: Removed 42 row(s) containing missing values (geom_path).
 
@@ -195,7 +196,8 @@ plot(
 plot(
   prepared_data,
   type = "bar",
-  trellis = TRUE)
+  trellis = TRUE
+)
 #> Warning: Removed 420 row(s) containing missing values (geom_path).
 #> Warning: Removed 420 row(s) containing missing values (geom_path).
 ```
@@ -221,7 +223,8 @@ plot(
   chronic_name = "chronic.mean",
 
   # Plot last n entries/days
-  last_n = 42)
+  last_n = 42
+)
 #> Plotting average across athletes. Please select athlete or use `trellis=TRUE`
 ```
 
@@ -235,7 +238,8 @@ plot(
   acute_name = "acute.mean",
   chronic_name = "chronic.mean",
   last_n = 42,
-  trellis = TRUE)
+  trellis = TRUE
+)
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-4.png" width="100%" />
@@ -268,7 +272,8 @@ plot(
   group_upper_name = "group.upper",
 
   # Use trellis if you do not plot for a single individual
-  trellis = TRUE)
+  trellis = TRUE
+)
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-5.png" width="100%" />
@@ -280,13 +285,13 @@ plot(
   prepared_data,
   type = "line",
 
- # To filter out athletes
+  # To filter out athletes
   athlete_name = "Ann Whitaker",
-
- group_lower_name = "group.lower",
- group_central_name = "group.median",
- group_upper_name = "group.upper",
-  trellis = TRUE)
+  group_lower_name = "group.lower",
+  group_central_name = "group.median",
+  group_upper_name = "group.upper",
+  trellis = TRUE
+)
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-6.png" width="100%" />
@@ -297,23 +302,32 @@ plot(
 plot(
   prepared_data,
   type = "calendar",
-  
+
   # To filter out athletes
   athlete_name = "Ann Whitaker",
-  
+
   # To filter out variables
   variable_name = "Training Load",
-  
+
   # To print estimator
   estimator_name = "variable.value", # Or use "entries"
 
   # To filter out last days
- last_n = 365,
-  
+  last_n = 365,
+
   # To setup colors
   low_color = "white",
   high_color = "red",
   na_color = "grey50",
+  
+  # Should the whole year be plotted?
+  full_year = TRUE,
+
+  # Short weekdays?
+  short_weekday = TRUE,
+
+  # Label size
+  label_size = 2,
   
   # Aggregation function in the case multiple athletes/variables/levels are used
   aggregate_func = mean
@@ -334,7 +348,8 @@ monitoring$Value_nominal <- cut(
   monitoring$Value,
   breaks = 5,
   labels = c("Very Easy", "Easy", "Medium", "Hard", "Very Hard"),
-  include.lowest = TRUE)
+  include.lowest = TRUE
+)
 
 
 # Create a missing value
@@ -348,21 +363,21 @@ prepared_data <- prepare(
   variable = "Variable",
   value = "Value_nominal",
   acute = 7,
-  chronic = 42, 
-  
-  # How should be missing entry treated? 
-  NA_session =  "<<<Session Missed>>>",
-  
+  chronic = 42,
+
+  # How should be missing entry treated?
+  NA_session = "<<<Session Missed>>>",
+
   # How should missing days (i.e. no entries) be treated?
   NA_day = "<<<Day Missed>>>",
-  
+
   # How should be multiple day entries summarised?
   # With "load", it is a "sum", with other metrics that
   # do not aggregate, it can me "mean"
   day_aggregate = function(x) {
     sum(x, na.rm = TRUE)
   },
-  
+
   # Rolling estimators for Acute and Chronic windows
   rolling_estimators = function(x) {
     c(
@@ -371,17 +386,17 @@ prepared_data <- prepare(
       "cv" = sd(x, na.rm = TRUE) / mean(x, na.rm = TRUE)
     )
   },
-  
+
   # Additional estimator post-rolling
   posthoc_estimators = function(data) {
     data$ACD <- data$acute.mean - data$chronic.mean
     data$ACR <- data$acute.mean / data$chronic.mean
     data$ES <- data$ACD / data$chronic.sd
-    
+
     # Make sure to return the data
     return(data)
   },
-  
+
   # Group summary estimators
   group_summary_estimators = function(x) {
     c(
@@ -428,7 +443,8 @@ monitoring$Value_nominal <- cut(
   monitoring$Value,
   breaks = 5,
   labels = c("Very Easy", "Easy", "Medium", "Hard", "Very Hard"),
-  include.lowest = TRUE)
+  include.lowest = TRUE
+)
 
 # Run the athlete monitoring data preparation
 prepared_data <- prepare(
@@ -438,47 +454,47 @@ prepared_data <- prepare(
   variable = "Variable",
   value = "Value_nominal",
   acute = 7,
-  chronic = 42, 
-  
-  # How should be missing entry treated? 
-  NA_session =  "<<<Session Missed>>>",
- 
+  chronic = 42,
+
+  # How should be missing entry treated?
+  NA_session = "<<<Session Missed>>>",
+
   # How should missing days (i.e. no entries) be treated?
   NA_day = "<<<Day Missed>>>",
-  
+
   # How should be multiple day entries summarised?
   # This is different with levels, for example
   # when there are two sessions, one is Low and one Hard
   # if you use mean, then Low and Hard will be 0.5, with sum
-  # both will be 0.5, in which case the level probabilities will be 
+  # both will be 0.5, in which case the level probabilities will be
   # summed to 1
   day_aggregate = function(x) {
     mean(x, na.rm = TRUE)
   },
-  
- # Rolling estimators for Acute and Chronic windows
+
+  # Rolling estimators for Acute and Chronic windows
   rolling_estimators = function(x) {
     c(
       "prop" = mean(x, na.rm = TRUE)
     )
   },
-  
+
   # Additional estimator post-rolling
   posthoc_estimators = function(data) {
     data$ACD <- data$acute.prop - data$chronic.prop
     data$ACR <- data$acute.prop / data$chronic.prop
-    
+
     # Make sure to return the data
     return(data)
   },
-  
+
   # Group summary estimators
   group_summary_estimators = function(x) {
-   c(
-     "median" = median(x, na.rm = TRUE),
+    c(
+      "median" = median(x, na.rm = TRUE),
       "lower" = quantile(x, 0.25, na.rm = TRUE)[[1]],
       "upper" = quantile(x, 0.75, na.rm = TRUE)[[1]]
-   )
+    )
   }
 )
 #> Using nominal approach: column 'value' in the 'data' provided is not numeric. It will be treated as nominal and each level will be analyzed as separate variable using rolling counts approach.
@@ -532,16 +548,15 @@ summary(prepared_data)
 plot(
   prepared_data,
   type = "line",
-  
+
   # To filter out athletes
   athlete_name = "Ann Whitaker",
-  
+
   # To filter out variables
   variable_name = "Training Load",
-  
+
   # To filter out estimators
   estimator_name = "acute.prop",
-  
   group_lower_name = "group.lower",
   group_central_name = "group.median",
   group_upper_name = "group.upper",

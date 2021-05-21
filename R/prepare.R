@@ -227,6 +227,15 @@
 #'   high_color = "red",
 #'   na_color = "grey50",
 #'
+#'   # Should the whole year be plotted?
+#'   full_year = TRUE,
+#'
+#'   # Short weekdays?
+#'   short_weekday = TRUE,
+#'
+#'   # Label size
+#'   label_size = 2,
+#'
 #'   # Aggregation function in the case multiple athletes/variables/levels are used
 #'   aggregate_func = mean
 #' )

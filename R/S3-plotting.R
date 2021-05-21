@@ -211,6 +211,15 @@
 #'   high_color = "red",
 #'   na_color = "grey50",
 #'
+#'   # Should the whole year be plotted?
+#'   full_year = TRUE,
+#'
+#'   # Short weekdays?
+#'   short_weekday = TRUE,
+#'
+#'   # Label size
+#'   label_size = 2,
+#'
 #'   # Aggregation function in the case multiple athletes/variables/levels are used
 #'   aggregate_func = mean
 #' )
@@ -760,7 +769,10 @@ plot_athletemonitoring_calendar <- function(object,
                                             low_color = "blue",
                                             high_color = "red",
                                             na_color = "grey50",
-                                            value_label = FALSE) {
+                                            value_label = FALSE,
+                                            full_year = TRUE,
+                                            short_weekday = TRUE,
+                                            label_size = 2) {
 
   # +++++++++++++++++++++++++++++++++++++++++++
   # Code chunk for dealing with R CMD check note
@@ -822,7 +834,10 @@ plot_athletemonitoring_calendar <- function(object,
     low_color = low_color,
     high_color = high_color,
     na_color = na_color,
-    value_label = value_label
+    value_label = value_label,
+    full_year = full_year,
+    short_weekday = short_weekday,
+    label_size = label_size
   )
 }
 
@@ -832,7 +847,10 @@ plot_calendar <- function(df,
                           low_color = "blue",
                           high_color = "red",
                           na_color = "grey50",
-                          value_label = FALSE) {
+                          value_label = FALSE,
+                          full_year = TRUE,
+                          short_weekday = TRUE,
+                          label_size = 2) {
 
   # Function created thank to Viet Le
   # URL: https://vietle.info/post/calendarheatmap/
@@ -849,6 +867,28 @@ plot_calendar <- function(df,
   value <- NULL
   # +++++++++++++++++++++++++++++++++++++++++++
 
+  df <- df %>%
+    dplyr::select(date, value)
+
+  if (full_year == TRUE) {
+    # We need to create a sequence of dates so
+    # we have a full year of data
+    min_year <- min(lubridate::year(df$date))
+    max_year <- max(lubridate::year(df$date))
+
+    seq_dates <- seq(
+      from = lubridate::dmy(paste0("1/1/", min_year)),
+      to = lubridate::dmy(paste0("31/12/", max_year)),
+      by = "day"
+    )
+
+    df <- dplyr::full_join(
+      data.frame(date = seq_dates),
+      df,
+      by = "date"
+    )
+  }
+
   dfPlot <- df %>%
     dplyr::mutate(
       year = lubridate::year(date),
@@ -858,6 +898,16 @@ plot_calendar <- function(df,
       week = lubridate::isoweek(date)
     )
 
+  # Shorten if needed
+  if (short_weekday == TRUE) {
+    dfPlot$weekday <- factor(
+      dfPlot$weekday,
+      levels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
+      labels = c("M", "T", "W", "Th", "F", "Sa", "Su"),
+      ordered = TRUE
+    )
+  }
+
   if (value_label == TRUE) {
     dfPlot$label <- dfPlot$value
   } else {
@@ -866,6 +916,7 @@ plot_calendar <- function(df,
 
   # isoweek makes the last week of the year as week 1, so need to change that to week 53 for the plot
   dfPlot$week[dfPlot$month == "Dec" & dfPlot$week == 1] <- 53
+  dfPlot$week[dfPlot$month == "Jan" & dfPlot$week == 53] <- 0
 
   dfPlot <- dfPlot %>%
     dplyr::group_by(year, month) %>%
@@ -876,7 +927,7 @@ plot_calendar <- function(df,
   gg <- dfPlot %>%
     ggplot2::ggplot(ggplot2::aes(x = weekday, y = -week, fill = value)) +
     ggplot2::geom_tile(colour = "white") +
-    ggplot2::geom_text(ggplot2::aes(label = label), size = 2.5, color = "black") +
+    ggplot2::geom_text(ggplot2::aes(label = label), size = label_size, color = "black") +
     ggplot2::theme(
       legend.title = ggplot2::element_blank(),
       axis.title.x = ggplot2::element_blank(),
