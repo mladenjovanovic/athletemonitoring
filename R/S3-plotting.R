@@ -882,8 +882,8 @@ plot_calendar <- function(df,
   if (full_year == TRUE) {
     # We need to create a sequence of dates so
     # we have a full year of data
-    min_year <- min(lubridate::year(df$date))
-    max_year <- max(lubridate::year(df$date))
+    min_year <- lubridate::year(min(df$date))
+    max_year <-lubridate::year(max(df$date))
 
     seq_dates <- seq(
       from = lubridate::dmy(paste0("1/1/", min_year)),
@@ -899,11 +899,11 @@ plot_calendar <- function(df,
   } else {
     # We need to create a sequence of dates so
     # we have a full months of data
-    min_year <- min(lubridate::year(df$date))
-    max_year <- max(lubridate::year(df$date))
+    min_year <- lubridate::year(min(df$date))
+    max_year <-lubridate::year(max(df$date))
 
-    min_month <- min(lubridate::month(df$date))
-    max_month <- max(lubridate::month(df$date))
+    min_month <- lubridate::month(min(df$date))
+    max_month <- lubridate::month(max(df$date))
 
     # Check to avoid overlap
     if (max_month == 12) {
