@@ -204,7 +204,7 @@
 #'   estimator_name = "variable.value", # Or use "entries"
 #'
 #'   # To filter out last days
-#'  last_n = 365,
+#'   last_n = 365,
 #'
 #'   # To setup colors
 #'   low_color = "white",
@@ -212,7 +212,13 @@
 #'   na_color = "grey50",
 #'
 #'   # Should the whole year be plotted?
-#'   full_year = TRUE,
+#'   # Otherwise full months are plotted
+#'   full_year = FALSE,
+#'
+#'   # Should year label be plotted?
+#'   # in the case of multiple years involved
+#'   # it is always plotted
+#'   year_label = FALSE,
 #'
 #'   # Short weekdays?
 #'   short_weekday = TRUE,
@@ -772,6 +778,7 @@ plot_athletemonitoring_calendar <- function(object,
                                             value_label = FALSE,
                                             full_year = TRUE,
                                             short_weekday = TRUE,
+                                            year_label = FALSE,
                                             label_size = 2) {
 
   # +++++++++++++++++++++++++++++++++++++++++++
@@ -837,7 +844,8 @@ plot_athletemonitoring_calendar <- function(object,
     value_label = value_label,
     full_year = full_year,
     short_weekday = short_weekday,
-    label_size = label_size
+    label_size = label_size,
+    year_label = year_label
   )
 }
 
@@ -850,6 +858,7 @@ plot_calendar <- function(df,
                           value_label = FALSE,
                           full_year = TRUE,
                           short_weekday = TRUE,
+                          year_label = FALSE,
                           label_size = 2) {
 
   # Function created thank to Viet Le
@@ -879,6 +888,32 @@ plot_calendar <- function(df,
     seq_dates <- seq(
       from = lubridate::dmy(paste0("1/1/", min_year)),
       to = lubridate::dmy(paste0("31/12/", max_year)),
+      by = "day"
+    )
+
+    df <- dplyr::full_join(
+      data.frame(date = seq_dates),
+      df,
+      by = "date"
+    )
+  } else {
+    # We need to create a sequence of dates so
+    # we have a full months of data
+    min_year <- min(lubridate::year(df$date))
+    max_year <- max(lubridate::year(df$date))
+
+    min_month <- min(lubridate::month(df$date))
+    max_month <- max(lubridate::month(df$date))
+
+    # Check to avoid overlap
+    if (max_month == 12) {
+      max_month <- 0
+      max_year <- max_year + 1
+    }
+
+    seq_dates <- seq(
+      from = lubridate::dmy(paste0("1/", min_month, "/", min_year)),
+      to = lubridate::dmy(paste0("1/", max_month+1, "/", max_year)) - 1,
       by = "day"
     )
 
@@ -947,7 +982,7 @@ plot_calendar <- function(df,
     )
 
   # Create facets
-  if (length(unique(dfPlot$year)) == 1) {
+  if (length(unique(dfPlot$year)) == 1 & year_label == FALSE) {
     gg <- gg + ggplot2::facet_wrap(~month, scales = "free")
   } else {
     gg <- gg + ggplot2::facet_wrap(year ~ month, scales = "free")

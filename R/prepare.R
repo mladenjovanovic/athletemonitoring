@@ -220,7 +220,7 @@
 #'   estimator_name = "variable.value", # Or use "entries"
 #'
 #'   # To filter out last days
-#'  last_n = 365,
+#'   last_n = 365,
 #'
 #'   # To setup colors
 #'   low_color = "white",
@@ -228,7 +228,13 @@
 #'   na_color = "grey50",
 #'
 #'   # Should the whole year be plotted?
-#'   full_year = TRUE,
+#'   # Otherwise full months are plotted
+#'   full_year = FALSE,
+#'
+#'   # Should year label be plotted?
+#'   # in the case of multiple years involved
+#'   # it is always plotted
+#'   year_label = FALSE,
 #'
 #'   # Short weekdays?
 #'   short_weekday = TRUE,
