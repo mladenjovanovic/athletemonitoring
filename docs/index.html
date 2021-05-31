@@ -347,30 +347,36 @@
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>
   <span class="va">prepared_data</span>,
   type <span class="op">=</span> <span class="st">"calendar"</span>,
-
+  
   <span class="co"># To filter out athletes</span>
   athlete_name <span class="op">=</span> <span class="st">"Ann Whitaker"</span>,
-
+  
   <span class="co"># To filter out variables</span>
   variable_name <span class="op">=</span> <span class="st">"Training Load"</span>,
-
+  
   <span class="co"># To print estimator</span>
   estimator_name <span class="op">=</span> <span class="st">"variable.value"</span>, <span class="co"># Or use "entries"</span>
-
+  
   <span class="co"># To filter out last days</span>
   last_n <span class="op">=</span> <span class="fl">365</span>,
-
+  
   <span class="co"># To setup colors</span>
   low_color <span class="op">=</span> <span class="st">"white"</span>,
   high_color <span class="op">=</span> <span class="st">"red"</span>,
   na_color <span class="op">=</span> <span class="st">"grey50"</span>,
   
   <span class="co"># Should the whole year be plotted?</span>
+  <span class="co"># Otherwise full months are plotted</span>
   full_year <span class="op">=</span> <span class="cn">TRUE</span>,
-
+  
+  <span class="co"># Should year label be plotted? </span>
+  <span class="co"># in the case of multiple years involved</span>
+  <span class="co"># it is always plotted</span>
+  year_label <span class="op">=</span> <span class="cn">FALSE</span>,
+  
   <span class="co"># Short weekdays?</span>
   short_weekday <span class="op">=</span> <span class="cn">TRUE</span>,
-
+  
   <span class="co"># Label size</span>
   label_size <span class="op">=</span> <span class="fl">2</span>,
   

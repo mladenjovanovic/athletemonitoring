@@ -234,22 +234,22 @@
 #&gt; 
 #&gt; 10 estimators:
 #&gt; variable.value, acute.mean, acute.sd, acute.cv, chronic.mean, chronic.sd, chronic.cv, ACD, ACR, ES</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>prepared_data</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 10 x 15</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 10 x 15</span>
 #&gt;    athlete          variable      `Total entries` `Day entries` `Missing entrie…
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>         </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> Alan McDonald    Training Load             520           363                0
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> Ann Whitaker     Training Load             520           363                0
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> Eve Black        Training Load             520           363                0
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> Frank West       Training Load             520           363                0
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> John Doe         Training Load             520           363                0
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> Michael Peterson Training Load             520           363                0
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> Mike Smith       Training Load             520           363                0
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> Peter Jackson    Training Load             520           363                0
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> Stuart Rogan     Training Load             520           363                0
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> Susan Kane       Training Load             520           363                0
-#&gt; </span><span style='color: #949494;'># … with 10 more variables: Missing days &lt;dbl&gt;, Start date &lt;date&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   Stop date &lt;date&gt;, Mean &lt;dbl&gt;, SD &lt;dbl&gt;, Min &lt;dbl&gt;, Max &lt;dbl&gt;, Median &lt;dbl&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   IQR &lt;dbl&gt;, MAD &lt;dbl&gt;</span><span></div><div class='input'>
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span> Alan McDonald    Training Load             520           363                0
+#&gt; <span style='color: #BCBCBC;'> 2</span> Ann Whitaker     Training Load             520           363                0
+#&gt; <span style='color: #BCBCBC;'> 3</span> Eve Black        Training Load             520           363                0
+#&gt; <span style='color: #BCBCBC;'> 4</span> Frank West       Training Load             520           363                0
+#&gt; <span style='color: #BCBCBC;'> 5</span> John Doe         Training Load             520           363                0
+#&gt; <span style='color: #BCBCBC;'> 6</span> Michael Peterson Training Load             520           363                0
+#&gt; <span style='color: #BCBCBC;'> 7</span> Mike Smith       Training Load             520           363                0
+#&gt; <span style='color: #BCBCBC;'> 8</span> Peter Jackson    Training Load             520           363                0
+#&gt; <span style='color: #BCBCBC;'> 9</span> Stuart Rogan     Training Load             520           363                0
+#&gt; <span style='color: #BCBCBC;'>10</span> Susan Kane       Training Load             520           363                0
+#&gt; <span style='color: #949494;'># … with 10 more variables: Missing days &lt;dbl&gt;, Start date &lt;date&gt;,</span>
+#&gt; <span style='color: #949494;'>#   Stop date &lt;date&gt;, Mean &lt;dbl&gt;, SD &lt;dbl&gt;, Min &lt;dbl&gt;, Max &lt;dbl&gt;, Median &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'>#   IQR &lt;dbl&gt;, MAD &lt;dbl&gt;</span></div><div class='input'>
 
 <span class='co'>## Plots</span>
 
@@ -379,7 +379,7 @@
   estimator_name <span class='op'>=</span> <span class='st'>"variable.value"</span>, <span class='co'># Or use "entries"</span>
 
   <span class='co'># To filter out last days</span>
- last_n <span class='op'>=</span> <span class='fl'>365</span>,
+  last_n <span class='op'>=</span> <span class='fl'>365</span>,
 
   <span class='co'># To setup colors</span>
   low_color <span class='op'>=</span> <span class='st'>"white"</span>,
@@ -387,7 +387,13 @@
   na_color <span class='op'>=</span> <span class='st'>"grey50"</span>,
 
   <span class='co'># Should the whole year be plotted?</span>
-  full_year <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='co'># Otherwise full months are plotted</span>
+  full_year <span class='op'>=</span> <span class='cn'>FALSE</span>,
+
+  <span class='co'># Should year label be plotted?</span>
+  <span class='co'># in the case of multiple years involved</span>
+  <span class='co'># it is always plotted</span>
+  year_label <span class='op'>=</span> <span class='cn'>FALSE</span>,
 
   <span class='co'># Short weekdays?</span>
   short_weekday <span class='op'>=</span> <span class='cn'>TRUE</span>,
@@ -482,21 +488,21 @@
 #&gt; 5 estimators:
 #&gt; variable.value, acute.prop, chronic.prop, ACD, ACR</div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>prepared_data</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 60 x 10</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 60 x 10</span>
 #&gt;    athlete    variable   level    `Total entries` `Day entries` `Missing entrie…
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span>              </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>         </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> Alan McDo… Training … Very Ea…             571           363                0
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> Alan McDo… Training … Easy                 571           363                0
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> Alan McDo… Training … Medium               571           363                0
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> Alan McDo… Training … Hard                 571           363                0
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> Alan McDo… Training … Very Ha…             571           363                0
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> Alan McDo… Training … &lt;&lt;&lt;Day …             571           363                0
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> Ann Whita… Training … Very Ea…             571           363                0
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> Ann Whita… Training … Easy                 571           363                0
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> Ann Whita… Training … Medium               571           363                0
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> Ann Whita… Training … Hard                 571           363                0
-#&gt; </span><span style='color: #949494;'># … with 50 more rows, and 4 more variables: Missing days &lt;int&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   Start date &lt;date&gt;, Stop date &lt;date&gt;, Proportion &lt;dbl&gt;</span><span></div><div class='input'>
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span>              <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span> Alan McDo… Training … Very Ea…             571           363                0
+#&gt; <span style='color: #BCBCBC;'> 2</span> Alan McDo… Training … Easy                 571           363                0
+#&gt; <span style='color: #BCBCBC;'> 3</span> Alan McDo… Training … Medium               571           363                0
+#&gt; <span style='color: #BCBCBC;'> 4</span> Alan McDo… Training … Hard                 571           363                0
+#&gt; <span style='color: #BCBCBC;'> 5</span> Alan McDo… Training … Very Ha…             571           363                0
+#&gt; <span style='color: #BCBCBC;'> 6</span> Alan McDo… Training … &lt;&lt;&lt;Day …             571           363                0
+#&gt; <span style='color: #BCBCBC;'> 7</span> Ann Whita… Training … Very Ea…             571           363                0
+#&gt; <span style='color: #BCBCBC;'> 8</span> Ann Whita… Training … Easy                 571           363                0
+#&gt; <span style='color: #BCBCBC;'> 9</span> Ann Whita… Training … Medium               571           363                0
+#&gt; <span style='color: #BCBCBC;'>10</span> Ann Whita… Training … Hard                 571           363                0
+#&gt; <span style='color: #949494;'># … with 50 more rows, and 4 more variables: Missing days &lt;int&gt;,</span>
+#&gt; <span style='color: #949494;'>#   Start date &lt;date&gt;, Stop date &lt;date&gt;, Proportion &lt;dbl&gt;</span></div><div class='input'>
 <span class='co'># Plots</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
   <span class='va'>prepared_data</span>,
@@ -516,7 +522,7 @@
   group_upper_name <span class='op'>=</span> <span class='st'>"group.upper"</span>,
   trellis <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span>
-</div><div class='img'><img src='plot.athletemonitoring-8.png' alt='' width='700' height='433' /></div></span></pre>
+</div><div class='img'><img src='plot.athletemonitoring-8.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
