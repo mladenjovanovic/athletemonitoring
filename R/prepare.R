@@ -14,6 +14,10 @@
 #' @param NA_day What value should be imputed for missing days? Default is \code{NA}
 #' @param acute Duration of the acute rolling window. Default is 7
 #' @param chronic Duration of the chronic rolling window. Default is 28
+#' @param partial Logical or numeric. If \code{FALSE} (default) then \code{rolling_estimators} is only
+#'      applied when all indexes of the rolling window are within the observed time range. If \code{TRUE},
+#'       then the subset of indexes that are in range are passed to \code{rolling_estimators}. A numeric
+#'       argument to partial can be used to determine the minimal window size for partial computations.
 #' @param rolling_fill Value used to fill start of the rolling windows. Default is \code{NA}
 #' @param rolling_estimators Function providing rolling estimators. See Details
 #' @param posthoc_estimators Function providing post-hoc estimators. See Details
@@ -341,6 +345,7 @@ prepare <- function(data,
                     NA_day = NA,
                     acute = 7,
                     chronic = 28,
+                    partial = FALSE,
                     rolling_fill = NA,
                     rolling_estimators = function(x) {
                       c(
@@ -374,6 +379,7 @@ prepare <- function(data,
       NA_day = NA_day,
       acute = acute,
       chronic = chronic,
+      partial = partial,
       rolling_fill = rolling_fill,
       rolling_estimators = rolling_estimators,
       posthoc_estimators = posthoc_estimators,
@@ -404,6 +410,7 @@ prepare <- function(data,
       NA_day = NA_day,
       acute = acute,
       chronic = chronic,
+      partial = partial,
       rolling_fill = rolling_fill,
       rolling_estimators = rolling_estimators,
       posthoc_estimators = posthoc_estimators,

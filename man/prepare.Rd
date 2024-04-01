@@ -10,19 +10,28 @@ prepare(
   date,
   variable,
   value,
-  day_aggregate = function(x) {     sum(x) },
+  day_aggregate = function(x) {
+     sum(x)
+ },
   NA_session = NA,
   NA_day = NA,
   acute = 7,
   chronic = 28,
+  partial = FALSE,
   rolling_fill = NA,
-  rolling_estimators = function(x) {     c(mean = mean(x, na.rm = TRUE), sd =
+  rolling_estimators = function(x) {
+     c(mean = mean(x, na.rm = TRUE), sd =
     stats::sd(x, na.rm = TRUE), cv = stats::sd(x, na.rm = TRUE)/mean(x, na.rm = TRUE),
-    conf = sum(!is.na(x))/length(x)) },
-  posthoc_estimators = function(data) {     return(data) },
-  group_summary_estimators = function(x) {     c(median = stats::median(x, na.rm =
+    conf = sum(!is.na(x))/length(x))
+ },
+  posthoc_estimators = function(data) {
+     return(data)
+ },
+  group_summary_estimators = function(x) {
+     c(median = stats::median(x, na.rm =
     TRUE), lower = stats::quantile(x, 0.25, na.rm = TRUE)[[1]], upper =
-    stats::quantile(x, 0.75, na.rm = TRUE)[[1]]) },
+    stats::quantile(x, 0.75, na.rm = TRUE)[[1]])
+ },
   iter = TRUE
 )
 }
@@ -47,6 +56,11 @@ to be either \code{Date} or \code{numeric} class}
 \item{acute}{Duration of the acute rolling window. Default is 7}
 
 \item{chronic}{Duration of the chronic rolling window. Default is 28}
+
+\item{partial}{Logical or numeric. If \code{FALSE} (default) then \code{rolling_estimators} is only
+applied when all indexes of the rolling window are within the observed time range. If \code{TRUE},
+then the subset of indexes that are in range are passed to \code{rolling_estimators}. A numeric
+argument to partial can be used to determine the minimal window size for partial computations.}
 
 \item{rolling_fill}{Value used to fill start of the rolling windows. Default is \code{NA}}
 
