@@ -594,7 +594,6 @@ plot_athletemonitoring_table <- function(object,
   level <- NULL
   # +++++++++++++++++++++++++++++++++++++++++++
 
-
   # Check if packages are available
   if (!requireNamespace("sparkline", quietly = TRUE)) {
     stop("Package \"sparkline\" needed for this function to work. Please install it.",
@@ -747,7 +746,7 @@ plot_athletemonitoring_table <- function(object,
       re_arranged_cols <- c(re_arranged_cols, i + n_estimators, i)
     }
 
-    plot_data <- plot_data[c(1:3, re_arranged_cols + 3)]
+    plot_data <- plot_data[c(1:4, re_arranged_cols + 4)]
   }
 
   # Create table
