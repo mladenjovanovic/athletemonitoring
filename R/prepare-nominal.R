@@ -158,7 +158,7 @@ prepare_nominal <- function(data,
     # Check is amount of data in 'value' is smaller than rolling window
     # Since zoo::rollapply will not return names estimators
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++
-    if (length(value) < acute) {
+    if (length(value) < acute & partial == FALSE) {
       acute_df <- rolling_estimators(rep(rolling_fill, length(value)))
       acute_df <- as.data.frame(t(acute_df))
     }
@@ -182,7 +182,7 @@ prepare_nominal <- function(data,
     # Check is amount of data in 'value' is smaller than rolling window
     # Since zoo::rollapply will not return names estimators
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++
-    if (length(value) < chronic) {
+    if (length(value) < chronic & partial == FALSE) {
       chronic_df <- rolling_estimators(rep(rolling_fill, length(value)))
       chronic_df <- as.data.frame(t(chronic_df))
     }
