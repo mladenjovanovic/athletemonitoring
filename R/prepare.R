@@ -22,6 +22,8 @@
 #' @param rolling_estimators Function providing rolling estimators. See Details
 #' @param posthoc_estimators Function providing post-hoc estimators. See Details
 #' @param group_summary_estimators Function providing group summary estimators. See Details
+#' @param align_all Should all athletes, dates, and variables be aligned to have all dates and levels.
+#'       Default is \code{FALSE}
 #' @param iter Should progress be shown? Default is \code{TRUE}
 #'
 #' @return Object of class \code{athletemonitoring}
@@ -365,6 +367,7 @@ prepare <- function(data,
                         "upper" = stats::quantile(x, 0.75, na.rm = TRUE)[[1]]
                       )
                     },
+                    align_all = FALSE,
                     iter = TRUE) {
   if (is.numeric(data[[value]])) {
     # Numeric
@@ -384,6 +387,7 @@ prepare <- function(data,
       rolling_estimators = rolling_estimators,
       posthoc_estimators = posthoc_estimators,
       group_summary_estimators = group_summary_estimators,
+      align_all = align_all,
       iter = iter
     )
   } else {
@@ -415,6 +419,7 @@ prepare <- function(data,
       rolling_estimators = rolling_estimators,
       posthoc_estimators = posthoc_estimators,
       group_summary_estimators = group_summary_estimators,
+      align_all = align_all,
       iter = iter
     )
   }

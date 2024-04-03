@@ -32,6 +32,7 @@ prepare(
     TRUE), lower = stats::quantile(x, 0.25, na.rm = TRUE)[[1]], upper =
     stats::quantile(x, 0.75, na.rm = TRUE)[[1]])
  },
+  align_all = FALSE,
   iter = TRUE
 )
 }
@@ -69,6 +70,9 @@ argument to partial can be used to determine the minimal window size for partial
 \item{posthoc_estimators}{Function providing post-hoc estimators. See Details}
 
 \item{group_summary_estimators}{Function providing group summary estimators. See Details}
+
+\item{align_all}{Should all athletes, dates, and variables be aligned to have all dates and levels.
+Default is \code{FALSE}}
 
 \item{iter}{Should progress be shown? Default is \code{TRUE}}
 }

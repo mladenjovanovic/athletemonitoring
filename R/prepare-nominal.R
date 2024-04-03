@@ -13,6 +13,7 @@ prepare_nominal <- function(data,
                             rolling_estimators,
                             posthoc_estimators,
                             group_summary_estimators,
+                            align_all,
                             iter) {
 
   # +++++++++++++++++++++++++++++++++++++++++++
@@ -100,8 +101,14 @@ prepare_nominal <- function(data,
 
     # Tag missing day
     dplyr::mutate(missing_day = is.na(start_date)) %>%
-    tidyr::fill(start_date, stop_date, .direction = "up") %>%
-    dplyr::filter(date >= start_date & date <= stop_date) %>%
+    tidyr::fill(start_date, stop_date, .direction = "up")
+
+   if (align_all == FALSE) {
+    data <- data %>%
+      dplyr::filter(date >= start_date & date <= stop_date)
+    }
+
+  data <- data %>%
     dplyr::select(-start_date, -stop_date) %>%
 
     # Fill in missing days
@@ -341,7 +348,8 @@ prepare_nominal <- function(data,
       rolling_fill = rolling_fill,
       rolling_estimators = rolling_estimators,
       posthoc_estimators = posthoc_estimators,
-      group_summary_estimators = group_summary_estimators
+      group_summary_estimators = group_summary_estimators,
+      align_all = align_all
     )
   )
 }

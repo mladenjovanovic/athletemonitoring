@@ -13,6 +13,7 @@ prepare_numeric <- function(data,
                             rolling_estimators,
                             posthoc_estimators,
                             group_summary_estimators,
+                            align_all,
                             iter) {
 
   # +++++++++++++++++++++++++++++++++++++++++++
@@ -65,6 +66,8 @@ prepare_numeric <- function(data,
   # Get the overall start and stop date to impute missing days
   start_date <- min(data$date)
   stop_date <- max(data$date)
+
+  # If align_all = TRUE, make sure that all athletes have all levels
 
   # Create a sequence of day
   if (is.numeric(data$date)) {
@@ -160,8 +163,14 @@ prepare_numeric <- function(data,
     # Tag missing day
     dplyr::mutate(missing_day = is.na(start_date)) %>%
 
-    tidyr::fill(start_date, stop_date, .direction = "up") %>%
-    dplyr::filter(date >= start_date & date <= stop_date) %>%
+    tidyr::fill(start_date, stop_date, .direction = "up")
+
+  if (align_all == FALSE) {
+    data <- data %>%
+      dplyr::filter(date >= start_date & date <= stop_date)
+  }
+
+  data <- data %>%
     dplyr::select(-start_date, -stop_date) %>%
 
     # Fill in missing days
@@ -287,7 +296,8 @@ prepare_numeric <- function(data,
       rolling_fill = rolling_fill,
       rolling_estimators = rolling_estimators,
       posthoc_estimators = posthoc_estimators,
-      group_summary_estimators = group_summary_estimators
+      group_summary_estimators = group_summary_estimators,
+      align_all = align_all
     )
   )
 }
