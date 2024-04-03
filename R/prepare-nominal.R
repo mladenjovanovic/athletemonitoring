@@ -30,7 +30,7 @@ prepare_nominal <- function(data,
   chronic.missing_day <- NULL
   # +++++++++++++++++++++++++++++++++++++++++++
 
-  if(iter) {
+  if (iter) {
     message("Preparing data...")
   }
 
@@ -95,22 +95,19 @@ prepare_nominal <- function(data,
   data <- data %>%
     # fill in the individual/variable start and stop days and remove excess
     dplyr::group_by(athlete, variable) %>%
-
     # Arrange/Sort
     dplyr::arrange(date) %>%
-
     # Tag missing day
     dplyr::mutate(missing_day = is.na(start_date)) %>%
     tidyr::fill(start_date, stop_date, .direction = "up")
 
-   if (align_all == FALSE) {
+  if (align_all == FALSE) {
     data <- data %>%
       dplyr::filter(date >= start_date & date <= stop_date)
-    }
+  }
 
   data <- data %>%
     dplyr::select(-start_date, -stop_date) %>%
-
     # Fill in missing days
     dplyr::mutate(value = ifelse(missing_day, NA_day, value))
 
@@ -119,9 +116,11 @@ prepare_nominal <- function(data,
     dplyr::group_by(athlete, date, variable) %>%
     dplyr::mutate(session = dplyr::row_number()) %>%
     tidyr::pivot_wider(
-      id_cols = c("athlete", "date",
-                  "variable", "session",
-                  "missing_entry", "missing_day"),
+      id_cols = c(
+        "athlete", "date",
+        "variable", "session",
+        "missing_entry", "missing_day"
+      ),
       names_from = "value"
     )
 
@@ -145,7 +144,7 @@ prepare_nominal <- function(data,
       missing_entry = sum(missing_entry),
       missing_day = sum(missing_day),
       value = day_aggregate(value)
-      )
+    )
 
   # Rolling function
   # =================
@@ -196,13 +195,13 @@ prepare_nominal <- function(data,
 
     # When there is only one estimator, the zoo::rollapply screws up
     # the name
-    colnames(chronic_df) <- paste0("chronic.",  names(rolling_estimators(1:100)))
+    colnames(chronic_df) <- paste0("chronic.", names(rolling_estimators(1:100)))
 
     # merge together
     data.frame(date = date, variable.value = value, acute_df, chronic_df)
   }
 
-  if(iter) {
+  if (iter) {
     message("Rolling...")
   }
 
@@ -233,7 +232,7 @@ prepare_nominal <- function(data,
   # ===================================
   # Group summaries
 
-  if(iter) {
+  if (iter) {
     message("Group summaries...")
   }
 
@@ -254,7 +253,7 @@ prepare_nominal <- function(data,
 
   # Missing data aggregator
 
-  if(iter) {
+  if (iter) {
     message("Missing data summaries...")
   }
 
@@ -272,29 +271,33 @@ prepare_nominal <- function(data,
         width = acute,
         partial = partial,
         fill = rolling_fill,
-        align = "right"),
+        align = "right"
+      ),
       chronic.missing_entry = zoo::rollapply(
         missing_entry,
         FUN = sum,
         width = chronic,
         partial = partial,
         fill = rolling_fill,
-        align = "right"),
+        align = "right"
+      ),
       acute.missing_day = zoo::rollapply(
         missing_day,
         FUN = sum,
         width = acute,
         partial = partial,
         fill = rolling_fill,
-        align = "right"),
+        align = "right"
+      ),
       chronic.missing_day = zoo::rollapply(
         missing_day,
         FUN = sum,
         width = chronic,
         partial = partial,
         fill = rolling_fill,
-        align = "right")
-      ) %>%
+        align = "right"
+      )
+    ) %>%
     dplyr::ungroup()
 
   missing_summary_group <- missing_summary_athlete %>%
@@ -327,7 +330,7 @@ prepare_nominal <- function(data,
     )
   }
 
-  if(iter) {
+  if (iter) {
     message("Done!")
   }
 

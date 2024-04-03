@@ -29,7 +29,7 @@ prepare_numeric <- function(data,
   chronic.missing_day <- NULL
   # +++++++++++++++++++++++++++++++++++++++++++
 
-  if(iter) {
+  if (iter) {
     message("Preparing data...")
   }
 
@@ -44,18 +44,17 @@ prepare_numeric <- function(data,
   # ------------------------------------
   data <- data %>%
     dplyr::group_by(athlete, date, variable) %>%
-
     # Fill in missing entry
     dplyr::mutate(
       missing_entry = is.na(value),
-      value = ifelse(missing_entry, NA_session, value)) %>%
-
+      value = ifelse(missing_entry, NA_session, value)
+    ) %>%
     # Aggregate to day value
     dplyr::summarise(
       entries = dplyr::n(),
       missing_entry = sum(missing_entry),
-      value = day_aggregate(value)) %>%
-
+      value = day_aggregate(value)
+    ) %>%
     # Get start and stop dates for every athlete and variable
     dplyr::group_by(athlete, variable) %>%
     dplyr::mutate(
@@ -149,20 +148,17 @@ prepare_numeric <- function(data,
     data.frame(date = date, variable.value = value, acute_df, chronic_df)
   }
 
-  if(iter) {
+  if (iter) {
     message("Rolling...")
   }
 
   data <- data %>%
     # fill in the individual/variable start and stop days and remove excess
     dplyr::group_by(athlete, variable) %>%
-
     # Arrange/Sort
     dplyr::arrange(date) %>%
-
     # Tag missing day
     dplyr::mutate(missing_day = is.na(start_date)) %>%
-
     tidyr::fill(start_date, stop_date, .direction = "up")
 
   if (align_all == FALSE) {
@@ -172,13 +168,10 @@ prepare_numeric <- function(data,
 
   data <- data %>%
     dplyr::select(-start_date, -stop_date) %>%
-
     # Fill in missing days
     dplyr::mutate(value = ifelse(missing_day, NA_day, value)) %>%
-
     # Count entries
     dplyr::mutate(entries = ifelse(is.na(entries), 0, entries)) %>%
-
     # Generate rolling estimators
     dplyr::mutate(
       roll_func(value, date)
@@ -203,7 +196,7 @@ prepare_numeric <- function(data,
   # ===================================
   # Group summaries
 
-  if(iter) {
+  if (iter) {
     message("Group summaries...")
   }
 
@@ -224,7 +217,7 @@ prepare_numeric <- function(data,
 
   # Missing data aggregator
 
-  if(iter) {
+  if (iter) {
     message("Missing data summaries...")
   }
 
@@ -238,28 +231,32 @@ prepare_numeric <- function(data,
         width = acute,
         partial = partial,
         fill = rolling_fill,
-        align = "right"),
+        align = "right"
+      ),
       chronic.missing_entry = zoo::rollapply(
         missing_entry,
         FUN = sum,
         width = chronic,
         partial = partial,
         fill = rolling_fill,
-        align = "right"),
+        align = "right"
+      ),
       acute.missing_day = zoo::rollapply(
         missing_day,
         FUN = sum,
         width = acute,
         partial = partial,
         fill = rolling_fill,
-        align = "right"),
+        align = "right"
+      ),
       chronic.missing_day = zoo::rollapply(
         missing_day,
         FUN = sum,
         width = chronic,
         partial = partial,
         fill = rolling_fill,
-        align = "right")
+        align = "right"
+      )
     ) %>%
     dplyr::ungroup()
 
@@ -275,7 +272,7 @@ prepare_numeric <- function(data,
     ) %>%
     dplyr::ungroup()
 
-  if(iter) {
+  if (iter) {
     message("Done!")
   }
 

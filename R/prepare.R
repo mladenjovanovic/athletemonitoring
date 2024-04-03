@@ -258,7 +258,8 @@
 #'   monitoring$Value,
 #'   breaks = 5,
 #'   labels = c("Very Easy", "Easy", "Medium", "Hard", "Very Hard"),
-#'   include.lowest = TRUE)
+#'   include.lowest = TRUE
+#' )
 #'
 #' # Run the athlete monitoring data preparation
 #' prepared_data <- prepare(
@@ -271,7 +272,7 @@
 #'   chronic = 42,
 #'
 #'   # How should be missing entry treated?
-#'   NA_session =  "<<<Session Missed>>>",
+#'   NA_session = "<<<Session Missed>>>",
 #'
 #'   # How should missing days (i.e. no entries) be treated?
 #'   NA_day = "<<<Day Missed>>>",
@@ -286,7 +287,7 @@
 #'     mean(x, na.rm = TRUE)
 #'   },
 #'
-#'  # Rolling estimators for Acute and Chronic windows
+#'   # Rolling estimators for Acute and Chronic windows
 #'   rolling_estimators = function(x) {
 #'     c(
 #'       "prop" = mean(x, na.rm = TRUE)
@@ -304,11 +305,11 @@
 #'
 #'   # Group summary estimators
 #'   group_summary_estimators = function(x) {
-#'    c(
-#'      "median" = median(x, na.rm = TRUE),
+#'     c(
+#'       "median" = median(x, na.rm = TRUE),
 #'       "lower" = quantile(x, 0.25, na.rm = TRUE)[[1]],
 #'       "upper" = quantile(x, 0.75, na.rm = TRUE)[[1]]
-#'    )
+#'     )
 #'   }
 #' )
 #'
@@ -329,7 +330,6 @@
 #'
 #'   # To filter out estimators
 #'   estimator_name = "acute.prop",
-#'
 #'   group_lower_name = "group.lower",
 #'   group_central_name = "group.median",
 #'   group_upper_name = "group.upper",
@@ -392,7 +392,7 @@ prepare <- function(data,
     )
   } else {
     # Nominal
-    if(iter) {
+    if (iter) {
       message(
         paste0(
           "Using nominal approach: ",

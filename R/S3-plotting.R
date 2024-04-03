@@ -236,7 +236,8 @@
 #'   monitoring$Value,
 #'   breaks = 5,
 #'   labels = c("Very Easy", "Easy", "Medium", "Hard", "Very Hard"),
-#'   include.lowest = TRUE)
+#'   include.lowest = TRUE
+#' )
 #'
 #' # Run the athlete monitoring data preparation
 #' prepared_data <- prepare(
@@ -249,7 +250,7 @@
 #'   chronic = 42,
 #'
 #'   # How should be missing entry treated?
-#'   NA_session =  "<<<Session Missed>>>",
+#'   NA_session = "<<<Session Missed>>>",
 #'
 #'   # How should missing days (i.e. no entries) be treated?
 #'   NA_day = "<<<Day Missed>>>",
@@ -264,7 +265,7 @@
 #'     mean(x, na.rm = TRUE)
 #'   },
 #'
-#'  # Rolling estimators for Acute and Chronic windows
+#'   # Rolling estimators for Acute and Chronic windows
 #'   rolling_estimators = function(x) {
 #'     c(
 #'       "prop" = mean(x, na.rm = TRUE)
@@ -282,11 +283,11 @@
 #'
 #'   # Group summary estimators
 #'   group_summary_estimators = function(x) {
-#'    c(
-#'      "median" = median(x, na.rm = TRUE),
+#'     c(
+#'       "median" = median(x, na.rm = TRUE),
 #'       "lower" = quantile(x, 0.25, na.rm = TRUE)[[1]],
 #'       "upper" = quantile(x, 0.75, na.rm = TRUE)[[1]]
-#'    )
+#'     )
 #'   }
 #' )
 #'
@@ -307,7 +308,6 @@
 #'
 #'   # To filter out estimators
 #'   estimator_name = "acute.prop",
-#'
 #'   group_lower_name = "group.lower",
 #'   group_central_name = "group.median",
 #'   group_upper_name = "group.upper",
@@ -882,7 +882,7 @@ plot_calendar <- function(df,
     # We need to create a sequence of dates so
     # we have a full year of data
     min_year <- lubridate::year(min(df$date))
-    max_year <-lubridate::year(max(df$date))
+    max_year <- lubridate::year(max(df$date))
 
     seq_dates <- seq(
       from = lubridate::dmy(paste0("1/1/", min_year)),
@@ -899,7 +899,7 @@ plot_calendar <- function(df,
     # We need to create a sequence of dates so
     # we have a full months of data
     min_year <- lubridate::year(min(df$date))
-    max_year <-lubridate::year(max(df$date))
+    max_year <- lubridate::year(max(df$date))
 
     min_month <- lubridate::month(min(df$date))
     max_month <- lubridate::month(max(df$date))
@@ -912,7 +912,7 @@ plot_calendar <- function(df,
 
     seq_dates <- seq(
       from = lubridate::dmy(paste0("1/", min_month, "/", min_year)),
-      to = lubridate::dmy(paste0("1/", max_month+1, "/", max_year)) - 1,
+      to = lubridate::dmy(paste0("1/", max_month + 1, "/", max_year)) - 1,
       by = "day"
     )
 
