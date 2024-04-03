@@ -97,8 +97,8 @@ summary.athletemonitoring <- function(object, ...) {
         `Day entries` = sum(!is.na(variable.value)),
         `Missing entries` = sum(missing_entry),
         `Missing days` = sum(missing_day),
-        `Start date` = min(date),
-        `Stop date` = max(date),
+        `Start date` = my.min(date),
+        `Stop date` = my.max(date),
         `Proportion` = sum(variable.value, na.rm = TRUE) / levels_sum[1]
       ) %>%
       dplyr::ungroup()
@@ -110,12 +110,12 @@ summary.athletemonitoring <- function(object, ...) {
         `Day entries` = sum(!is.na(variable.value)),
         `Missing entries` = sum(missing_entry),
         `Missing days` = sum(missing_day),
-        `Start date` = min(date),
-        `Stop date` = max(date),
+        `Start date` = my.min(date),
+        `Stop date` = my.max(date),
         `Mean` = mean(variable.value, na.rm = TRUE),
         `SD` = stats::sd(variable.value, na.rm = TRUE),
-        `Min` = min(variable.value, na.rm = TRUE),
-        `Max` = mean(variable.value, na.rm = TRUE),
+        `Min` = my.min(variable.value),
+        `Max` = my.max(variable.value),
         `Median` = stats::median(variable.value, na.rm = TRUE),
         `IQR` = stats::IQR(variable.value, na.rm = TRUE),
         `MAD` = stats::mad(variable.value, na.rm = TRUE)
