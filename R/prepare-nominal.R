@@ -13,7 +13,7 @@ prepare_nominal <- function(data,
                             rolling_estimators,
                             posthoc_estimators,
                             group_summary_estimators,
-                            align_all,
+                            extend,
                             iter) {
 
   # +++++++++++++++++++++++++++++++++++++++++++
@@ -28,6 +28,8 @@ prepare_nominal <- function(data,
   chronic.missing_entry <- NULL
   acute.missing_day <- NULL
   chronic.missing_day <- NULL
+  start_date <- NULL
+  stop_date <- NULL
   # +++++++++++++++++++++++++++++++++++++++++++
 
   if (iter) {
@@ -64,14 +66,14 @@ prepare_nominal <- function(data,
     )
 
   # Get the overall start and stop date to impute missing days
-  start_date <- min(data$date)
-  stop_date <- max(data$date)
+  overall_start_date <- min(data$date)
+  overall_stop_date <- max(data$date)
 
   # Create a sequence of day
   if (is.numeric(data$date)) {
-    date_seq <- seq(start_date, stop_date)
+    date_seq <- seq(overall_start_date, overall_stop_date)
   } else {
-    date_seq <- seq(start_date, stop_date, "days")
+    date_seq <- seq(overall_start_date, overall_stop_date, "days")
   }
 
   # Generate a continuous df so that there are no missing days for every athlete
@@ -101,12 +103,22 @@ prepare_nominal <- function(data,
     dplyr::mutate(missing_day = is.na(start_date)) %>%
     tidyr::fill(start_date, stop_date, .direction = "up")
 
-  if (align_all == FALSE) {
+  # Extend features
+  if (extend == "none") {
     data <- data %>%
       dplyr::filter(date >= start_date & date <= stop_date)
+  } else if (extend == "start") {
+    data <- data %>%
+      dplyr::group_by(athlete) %>%
+      dplyr::filter(date <= my.max(stop_date))
+  } else if (extend == "end") {
+    data <- data %>%
+      dplyr::group_by(athlete) %>%
+      dplyr::filter(date >= my.min(start_date))
   }
 
   data <- data %>%
+    dplyr::group_by(athlete, variable) %>%
     dplyr::select(-start_date, -stop_date) %>%
     # Fill in missing days
     dplyr::mutate(value = ifelse(missing_day, NA_day, value))
@@ -352,7 +364,7 @@ prepare_nominal <- function(data,
       rolling_estimators = rolling_estimators,
       posthoc_estimators = posthoc_estimators,
       group_summary_estimators = group_summary_estimators,
-      align_all = align_all
+      extend = extend
     )
   )
 }
