@@ -123,6 +123,8 @@ prepare_nominal <- function(data,
     # Fill in missing days
     dplyr::mutate(value = ifelse(missing_day, NA_day, value))
 
+  # ------------------
+  browser()
   # Create wide version
   data <- data %>%
     dplyr::group_by(athlete, date, variable) %>%
