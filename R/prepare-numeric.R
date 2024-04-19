@@ -14,6 +14,7 @@ prepare_numeric <- function(data,
                             posthoc_estimators,
                             group_summary_estimators,
                             extend,
+                            extend_fill,
                             iter) {
 
   # +++++++++++++++++++++++++++++++++++++++++++
@@ -304,7 +305,8 @@ prepare_numeric <- function(data,
       rolling_estimators = rolling_estimators,
       posthoc_estimators = posthoc_estimators,
       group_summary_estimators = group_summary_estimators,
-      extend = extend
+      extend = extend,
+      extend_fill = extend_fill
     )
   )
 }

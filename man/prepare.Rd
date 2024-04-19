@@ -33,6 +33,7 @@ prepare(
     stats::quantile(x, 0.75, na.rm = TRUE)[[1]])
  },
   extend = c("none", "start", "end", "both"),
+  extend_fill = NA_day,
   iter = TRUE
 )
 }
@@ -75,6 +76,8 @@ argument to partial can be used to determine the minimal window size for partial
 Default is \code{"none"}. Other options are \code{"start"} for aligning start dates, \code{"end"}
 for aligning end dates, and \code{"both"} for aligning both start and end days as well as variable
 levels across athletes}
+
+\item{extend_fill}{What value should be imputed for the extended days? Default is \code{NA_day}}
 
 \item{iter}{Should progress be shown? Default is \code{TRUE}}
 }
