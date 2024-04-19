@@ -84,8 +84,9 @@ print.athletemonitoring <- function(x, ...) {
   cat(length(unique(x$data_wide$date)), "days:\n")
   cat("From", min(x$data_wide$date), "to", max(x$data_wide$date), "\n\n")
   cat(sum(x$data_wide$entries), "total entries\n\n")
-  cat(sum(x$missing_summary_group$missing_entry), "missing entries\n")
-  cat(sum(x$missing_summary_group$missing_day), "missing days\n\n")
+  cat(sum(x$missing_summary_group$missing_entries), "missing entries\n")
+  cat(sum(x$missing_summary_group$missing_day), "missing days\n")
+  cat(sum(x$missing_summary_group$extended_day), "extended days\n\n")
   cat(length(unique(x$data_wide$variable)), "variables:\n")
   cat(paste(unique(x$data_wide$variable), collapse = ", "), "\n\n")
 

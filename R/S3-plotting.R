@@ -589,8 +589,9 @@ plot_athletemonitoring_table <- function(object,
   variable <- NULL
   estimator <- NULL
   value <- NULL
-  missing_entry <- NULL
+  missing_entries <- NULL
   missing_day <- NULL
+  extended_day <- NULL
   level <- NULL
   # +++++++++++++++++++++++++++++++++++++++++++
 
@@ -615,7 +616,7 @@ plot_athletemonitoring_table <- function(object,
 
   plot_data <- plot_data %>%
     # Remove missing data info
-    dplyr::select(-missing_entry, -missing_day) %>%
+    dplyr::select(-missing_entries, -missing_day, -extended_day) %>%
     # Filter last_n
     dplyr::group_by(athlete, variable) %>%
     dplyr::filter(date > max(date) - last_n) %>%
