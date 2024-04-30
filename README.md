@@ -126,6 +126,7 @@ prepared_data
 #> 
 #> 0 missing entries
 #> 510 missing days
+#> 0 extended days
 #> 
 #> 1 variables:
 #> Training Load 
@@ -134,22 +135,22 @@ prepared_data
 #> variable.value, acute.mean, acute.sd, acute.cv, chronic.mean, chronic.sd, chronic.cv, ACD, ACR, ES
 
 summary(prepared_data)
-#> # A tibble: 10 x 15
-#>    athlete          variable      `Total entries` `Day entries` `Missing entrie…
-#>    <chr>            <chr>                   <dbl>         <int>            <dbl>
-#>  1 Alan McDonald    Training Load             520           363                0
-#>  2 Ann Whitaker     Training Load             520           363                0
-#>  3 Eve Black        Training Load             520           363                0
-#>  4 Frank West       Training Load             520           363                0
-#>  5 John Doe         Training Load             520           363                0
-#>  6 Michael Peterson Training Load             520           363                0
-#>  7 Mike Smith       Training Load             520           363                0
-#>  8 Peter Jackson    Training Load             520           363                0
-#>  9 Stuart Rogan     Training Load             520           363                0
-#> 10 Susan Kane       Training Load             520           363                0
-#> # … with 10 more variables: Missing days <dbl>, Start date <date>,
-#> #   Stop date <date>, Mean <dbl>, SD <dbl>, Min <dbl>, Max <dbl>, Median <dbl>,
-#> #   IQR <dbl>, MAD <dbl>
+#> # A tibble: 10 × 16
+#>    athlete          variable     `Total entries` `Day entries` `Missing entries`
+#>    <chr>            <chr>                  <dbl>         <int>             <dbl>
+#>  1 Alan McDonald    Training Lo…             520           363                 0
+#>  2 Ann Whitaker     Training Lo…             520           363                 0
+#>  3 Eve Black        Training Lo…             520           363                 0
+#>  4 Frank West       Training Lo…             520           363                 0
+#>  5 John Doe         Training Lo…             520           363                 0
+#>  6 Michael Peterson Training Lo…             520           363                 0
+#>  7 Mike Smith       Training Lo…             520           363                 0
+#>  8 Peter Jackson    Training Lo…             520           363                 0
+#>  9 Stuart Rogan     Training Lo…             520           363                 0
+#> 10 Susan Kane       Training Lo…             520           363                 0
+#> # ℹ 11 more variables: `Missing days` <int>, `Extended days` <int>,
+#> #   `Start date` <dbl>, `Stop date` <dbl>, Mean <dbl>, SD <dbl>, Min <dbl>,
+#> #   Max <dbl>, Median <dbl>, IQR <dbl>, MAD <dbl>
 
 
 ## Plots
@@ -184,27 +185,32 @@ plot(
   type = "bar"
 )
 #> Plotting average across athletes. Please select athlete or use `trellis=TRUE`
-#> Warning: Removed 42 row(s) containing missing values (geom_path).
-
-#> Warning: Removed 42 row(s) containing missing values (geom_path).
+#> Warning: Removed 42 rows containing missing values or values outside the scale range
+#> (`geom_line()`).
+#> Removed 42 rows containing missing values or values outside the scale range
+#> (`geom_line()`).
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
 
 ``` r
+
 # To plot per athlete, use trellis argument
 plot(
   prepared_data,
   type = "bar",
   trellis = TRUE
 )
-#> Warning: Removed 420 row(s) containing missing values (geom_path).
-#> Warning: Removed 420 row(s) containing missing values (geom_path).
+#> Warning: Removed 420 rows containing missing values or values outside the scale range
+#> (`geom_line()`).
+#> Warning: Removed 420 rows containing missing values or values outside the scale range
+#> (`geom_line()`).
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-2.png" width="100%" />
 
 ``` r
+
 # To filter out athletem variable and add Acute and Chronic lines to the group average:
 plot(
   prepared_data,
@@ -231,6 +237,7 @@ plot(
 <img src="man/figures/README-unnamed-chunk-2-3.png" width="100%" />
 
 ``` r
+
 # If you want to plot for each athlete, use trellis=TRUE
 plot(
   prepared_data,
@@ -245,6 +252,7 @@ plot(
 <img src="man/figures/README-unnamed-chunk-2-4.png" width="100%" />
 
 ``` r
+
 # Line plots
 # These plots represent summary of the rollins estimators
 plot(
@@ -279,6 +287,7 @@ plot(
 <img src="man/figures/README-unnamed-chunk-2-5.png" width="100%" />
 
 ``` r
+
 # Previous chart looks messy because it plot all athletes
 # To avoid that, filter out only one athlete
 plot(
@@ -297,6 +306,7 @@ plot(
 <img src="man/figures/README-unnamed-chunk-2-6.png" width="100%" />
 
 ``` r
+
 
 # Calendar heatmap plot
 plot(
@@ -433,6 +443,7 @@ prepared_data
 #> 
 #> 1 missing entries
 #> 510 missing days
+#> 0 extended days
 #> 
 #> 1 variables:
 #> Training Load 
@@ -523,6 +534,7 @@ prepared_data
 #> 
 #> 0 missing entries
 #> 510 missing days
+#> 0 extended days
 #> 
 #> 1 variables:
 #> Training Load 
@@ -534,21 +546,22 @@ prepared_data
 #> variable.value, acute.prop, chronic.prop, ACD, ACR
 
 summary(prepared_data)
-#> # A tibble: 60 x 10
-#>    athlete    variable   level    `Total entries` `Day entries` `Missing entrie…
-#>    <chr>      <chr>      <fct>              <int>         <int>            <int>
-#>  1 Alan McDo… Training … Very Ea…             571           363                0
-#>  2 Alan McDo… Training … Easy                 571           363                0
-#>  3 Alan McDo… Training … Medium               571           363                0
-#>  4 Alan McDo… Training … Hard                 571           363                0
-#>  5 Alan McDo… Training … Very Ha…             571           363                0
-#>  6 Alan McDo… Training … <<<Day …             571           363                0
-#>  7 Ann Whita… Training … Very Ea…             571           363                0
-#>  8 Ann Whita… Training … Easy                 571           363                0
-#>  9 Ann Whita… Training … Medium               571           363                0
-#> 10 Ann Whita… Training … Hard                 571           363                0
-#> # … with 50 more rows, and 4 more variables: Missing days <int>,
-#> #   Start date <date>, Stop date <date>, Proportion <dbl>
+#> # A tibble: 60 × 11
+#>    athlete       variable  level `Total entries` `Day entries` `Missing entries`
+#>    <chr>         <chr>     <chr>           <int>         <int>             <dbl>
+#>  1 Alan McDonald Training… <<<D…             571           363                 0
+#>  2 Alan McDonald Training… Easy              571           363                 0
+#>  3 Alan McDonald Training… Hard              571           363                 0
+#>  4 Alan McDonald Training… Medi…             571           363                 0
+#>  5 Alan McDonald Training… Very…             571           363                 0
+#>  6 Alan McDonald Training… Very…             571           363                 0
+#>  7 Ann Whitaker  Training… <<<D…             571           363                 0
+#>  8 Ann Whitaker  Training… Easy              571           363                 0
+#>  9 Ann Whitaker  Training… Hard              571           363                 0
+#> 10 Ann Whitaker  Training… Medi…             571           363                 0
+#> # ℹ 50 more rows
+#> # ℹ 5 more variables: `Missing days` <int>, `Extended days` <int>,
+#> #   `Start date` <dbl>, `Stop date` <dbl>, Proportion <dbl>
 
 # Plots
 plot(
