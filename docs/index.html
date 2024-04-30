@@ -31,6 +31,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -43,18 +45,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">athletemonitoring</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
@@ -64,7 +60,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/mladenjovanovic/athletemonitoring/">
+  <a href="https://github.com/mladenjovanovic/athletemonitoring/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -81,592 +77,609 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="athletemonitoring-" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#athletemonitoring-" class="anchor"></a>athletemonitoring <img src="reference/figures/logo.png" align="right" width="200">
+<div class="section level1">
+<div class="page-header"><h1 id="athletemonitoring-">athletemonitoring <img src="reference/figures/logo.png" align="right" width="200"><a class="anchor" aria-label="anchor" href="#athletemonitoring-"></a>
 </h1></div>
 <!-- badges: start -->
 
 <p>Athlete monitoring data often comes in a form of time series or panel data. The goal of <code>athletemonitoring</code> package is to help in preparing these types of datasets using contemporary best practices which involve dealing with missing values, aggregating data on a day-level, creating rolling averages and finally providing visualizations.</p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the released version of <code>athletemonitoring</code> from <a href="https://CRAN.R-project.org">CRAN</a> when it is available with:</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>You can install the released version of <code>athletemonitoring</code> from <a href="https://CRAN.R-project.org" class="external-link">CRAN</a> when it is available with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"athletemonitoring"</span><span class="op">)</span></code></pre></div>
-<p>And the development version from <a href="https://github.com/">GitHub</a> with:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"athletemonitoring"</span><span class="op">)</span></span></code></pre></div>
+<p>And the development version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"mladenjovanovic/athletemonitoring"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"mladenjovanovic/athletemonitoring"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h2>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
 <p><code>athletemonitoring</code> package is very simple package consisting of only the <code><a href="reference/prepare.html">prepare()</a></code> function and S3 methods for printing, summarizing, and plotting. Plotting features in <code>athletemonitoring</code> package are very powerful and flexible and allow you to create table, bar, line, and calendar heatmap plots.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mladenjovanovic/athletemonitoring">athletemonitoring</a></span><span class="op">)</span>
-<span class="co">#&gt; Loading required package: athletemonitoring</span>
-
-<span class="co"># Load monitoring data set</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"monitoring"</span><span class="op">)</span>
-
-<span class="co"># Filter out only 'Training Load'</span>
-<span class="va">monitoring</span> <span class="op">&lt;-</span> <span class="va">monitoring</span><span class="op">[</span><span class="va">monitoring</span><span class="op">$</span><span class="va">Variable</span> <span class="op">==</span> <span class="st">"Training Load"</span>, <span class="op">]</span>
-
-<span class="co"># Convert column to date format (or use numeric)</span>
-<span class="va">monitoring</span><span class="op">$</span><span class="va">Date</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="va">monitoring</span><span class="op">$</span><span class="va">Date</span>, <span class="st">"%Y-%m-%d"</span><span class="op">)</span>
-
-<span class="co"># Run the athlete monitoring data preparation</span>
-<span class="va">prepared_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/prepare.html">prepare</a></span><span class="op">(</span>
-  data <span class="op">=</span> <span class="va">monitoring</span>,
-  athlete <span class="op">=</span> <span class="st">"Full Name"</span>,
-  date <span class="op">=</span> <span class="st">"Date"</span>,
-  variable <span class="op">=</span> <span class="st">"Variable"</span>,
-  value <span class="op">=</span> <span class="st">"Value"</span>,
-  acute <span class="op">=</span> <span class="fl">7</span>,
-  chronic <span class="op">=</span> <span class="fl">42</span>,
-
-  <span class="co"># How should be missing entry treated?</span>
-  <span class="co"># What do we assume? Zero load? Let's keep NA</span>
-  NA_session <span class="op">=</span> <span class="cn">NA</span>,
-
-  <span class="co"># How should missing days (i.e. no entries) be treated?</span>
-  <span class="co"># Here we assume no training, hence zero</span>
-  NA_day <span class="op">=</span> <span class="fl">0</span>,
-
-  <span class="co"># How should be multiple day entries summarised?</span>
-  <span class="co"># With "load", it is a "sum", with other metrics that</span>
-  <span class="co"># do not aggregate, it can me "mean"</span>
-  day_aggregate <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  <span class="op">}</span>,
-
-  <span class="co"># Rolling estimators for Acute and Chronic windows</span>
-  rolling_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
-      <span class="st">"mean"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-      <span class="st">"sd"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-      <span class="st">"cv"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-    <span class="op">)</span>
-  <span class="op">}</span>,
-
-  <span class="co"># Additional estimator post-rolling</span>
-  posthoc_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">data</span><span class="op">$</span><span class="va">ACD</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">acute.mean</span> <span class="op">-</span> <span class="va">data</span><span class="op">$</span><span class="va">chronic.mean</span>
-    <span class="va">data</span><span class="op">$</span><span class="va">ACR</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">acute.mean</span> <span class="op">/</span> <span class="va">data</span><span class="op">$</span><span class="va">chronic.mean</span>
-    <span class="va">data</span><span class="op">$</span><span class="va">ES</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">ACD</span> <span class="op">/</span> <span class="va">data</span><span class="op">$</span><span class="va">chronic.sd</span>
-
-    <span class="co"># Make sure to return the data</span>
-    <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
-  <span class="op">}</span>,
-
-  <span class="co"># Group summary estimators</span>
-  group_summary_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
-      <span class="st">"median"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-      <span class="st">"lower"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">0.25</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,
-      <span class="st">"upper"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">0.75</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
-    <span class="op">)</span>
-  <span class="op">}</span>
-<span class="op">)</span>
-<span class="co">#&gt; Preparing data...</span>
-<span class="co">#&gt; Rolling...</span>
-<span class="co">#&gt; Group summaries...</span>
-<span class="co">#&gt; Missing data summaries...</span>
-<span class="co">#&gt; Done!</span>
-
-<span class="co"># Get summary</span>
-<span class="va">prepared_data</span>
-<span class="co">#&gt; Athlete monitoring numeric data with the following characteristics:</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 10 athletes:</span>
-<span class="co">#&gt; Alan McDonald, Ann Whitaker, Eve Black, Frank West, John Doe, Michael Peterson, Mike Smith, Peter Jackson, Stuart Rogan, Susan Kane </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 363 days:</span>
-<span class="co">#&gt; From 18263 to 18625 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 5200 total entries</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 0 missing entries</span>
-<span class="co">#&gt; 510 missing days</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 1 variables:</span>
-<span class="co">#&gt; Training Load </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 10 estimators:</span>
-<span class="co">#&gt; variable.value, acute.mean, acute.sd, acute.cv, chronic.mean, chronic.sd, chronic.cv, ACD, ACR, ES</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">prepared_data</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 10 x 15</span>
-<span class="co">#&gt;    athlete          variable      `Total entries` `Day entries` `Missing entrie…</span>
-<span class="co">#&gt;    &lt;chr&gt;            &lt;chr&gt;                   &lt;dbl&gt;         &lt;int&gt;            &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 Alan McDonald    Training Load             520           363                0</span>
-<span class="co">#&gt;  2 Ann Whitaker     Training Load             520           363                0</span>
-<span class="co">#&gt;  3 Eve Black        Training Load             520           363                0</span>
-<span class="co">#&gt;  4 Frank West       Training Load             520           363                0</span>
-<span class="co">#&gt;  5 John Doe         Training Load             520           363                0</span>
-<span class="co">#&gt;  6 Michael Peterson Training Load             520           363                0</span>
-<span class="co">#&gt;  7 Mike Smith       Training Load             520           363                0</span>
-<span class="co">#&gt;  8 Peter Jackson    Training Load             520           363                0</span>
-<span class="co">#&gt;  9 Stuart Rogan     Training Load             520           363                0</span>
-<span class="co">#&gt; 10 Susan Kane       Training Load             520           363                0</span>
-<span class="co">#&gt; # … with 10 more variables: Missing days &lt;dbl&gt;, Start date &lt;date&gt;,</span>
-<span class="co">#&gt; #   Stop date &lt;date&gt;, Mean &lt;dbl&gt;, SD &lt;dbl&gt;, Min &lt;dbl&gt;, Max &lt;dbl&gt;, Median &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   IQR &lt;dbl&gt;, MAD &lt;dbl&gt;</span>
-
-
-<span class="co">## Plots</span>
-
-<span class="co"># Table plot</span>
-<span class="co"># Produces formattable output with sparklines</span>
-<span class="co"># This will not work in the readme file, so just copy paste to your console</span>
-<span class="co"># plot(</span>
-<span class="co">#  prepared_data,</span>
-<span class="co">#  type = "table",</span>
-<span class="co">#</span>
-<span class="co">#  # Use to filter out estimators</span>
-<span class="co">#  estimator_name = c("acute.mean", "chronic.mean", "ES", "chronic.sd", "chronic.cv"),</span>
-<span class="co">#</span>
-<span class="co">#  # Use to filter out athlete</span>
-<span class="co">#  # athlete_name = NULL,</span>
-<span class="co">#</span>
-<span class="co">#  # Use to filter out variables</span>
-<span class="co">#  #variable_name = NULL,</span>
-<span class="co">#</span>
-<span class="co">#  # Show last entries</span>
-<span class="co">#  last_n = 42,</span>
-<span class="co">#</span>
-<span class="co">#  # Round numbers</span>
-<span class="co">#  digits = 2</span>
-<span class="co"># )</span>
-
-<span class="co"># Bar plot</span>
-<span class="co"># To plot group average</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>
-  <span class="va">prepared_data</span>,
-  type <span class="op">=</span> <span class="st">"bar"</span>
-<span class="op">)</span>
-<span class="co">#&gt; Plotting average across athletes. Please select athlete or use `trellis=TRUE`</span>
-<span class="co">#&gt; Warning: Removed 42 row(s) containing missing values (geom_path).</span>
-
-<span class="co">#&gt; Warning: Removed 42 row(s) containing missing values (geom_path).</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mladenjovanovic/athletemonitoring" class="external-link">athletemonitoring</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Loading required package: athletemonitoring</span></span>
+<span></span>
+<span><span class="co"># Load monitoring data set</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"monitoring"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Filter out only 'Training Load'</span></span>
+<span><span class="va">monitoring</span> <span class="op">&lt;-</span> <span class="va">monitoring</span><span class="op">[</span><span class="va">monitoring</span><span class="op">$</span><span class="va">Variable</span> <span class="op">==</span> <span class="st">"Training Load"</span>, <span class="op">]</span></span>
+<span></span>
+<span><span class="co"># Convert column to date format (or use numeric)</span></span>
+<span><span class="va">monitoring</span><span class="op">$</span><span class="va">Date</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="va">monitoring</span><span class="op">$</span><span class="va">Date</span>, <span class="st">"%Y-%m-%d"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run the athlete monitoring data preparation</span></span>
+<span><span class="va">prepared_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/prepare.html">prepare</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">monitoring</span>,</span>
+<span>  athlete <span class="op">=</span> <span class="st">"Full Name"</span>,</span>
+<span>  date <span class="op">=</span> <span class="st">"Date"</span>,</span>
+<span>  variable <span class="op">=</span> <span class="st">"Variable"</span>,</span>
+<span>  value <span class="op">=</span> <span class="st">"Value"</span>,</span>
+<span>  acute <span class="op">=</span> <span class="fl">7</span>,</span>
+<span>  chronic <span class="op">=</span> <span class="fl">42</span>,</span>
+<span></span>
+<span>  <span class="co"># How should be missing entry treated?</span></span>
+<span>  <span class="co"># What do we assume? Zero load? Let's keep NA</span></span>
+<span>  NA_session <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span></span>
+<span>  <span class="co"># How should missing days (i.e. no entries) be treated?</span></span>
+<span>  <span class="co"># Here we assume no training, hence zero</span></span>
+<span>  NA_day <span class="op">=</span> <span class="fl">0</span>,</span>
+<span></span>
+<span>  <span class="co"># How should be multiple day entries summarised?</span></span>
+<span>  <span class="co"># With "load", it is a "sum", with other metrics that</span></span>
+<span>  <span class="co"># do not aggregate, it can me "mean"</span></span>
+<span>  day_aggregate <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span></span>
+<span>  <span class="co"># Rolling estimators for Acute and Chronic windows</span></span>
+<span>  rolling_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"mean"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>      <span class="st">"sd"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>      <span class="st">"cv"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span></span>
+<span>  <span class="co"># Additional estimator post-rolling</span></span>
+<span>  posthoc_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">data</span><span class="op">$</span><span class="va">ACD</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">acute.mean</span> <span class="op">-</span> <span class="va">data</span><span class="op">$</span><span class="va">chronic.mean</span></span>
+<span>    <span class="va">data</span><span class="op">$</span><span class="va">ACR</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">acute.mean</span> <span class="op">/</span> <span class="va">data</span><span class="op">$</span><span class="va">chronic.mean</span></span>
+<span>    <span class="va">data</span><span class="op">$</span><span class="va">ES</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">ACD</span> <span class="op">/</span> <span class="va">data</span><span class="op">$</span><span class="va">chronic.sd</span></span>
+<span></span>
+<span>    <span class="co"># Make sure to return the data</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span></span>
+<span>  <span class="co"># Group summary estimators</span></span>
+<span>  group_summary_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"median"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>      <span class="st">"lower"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">0.25</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>      <span class="st">"upper"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">0.75</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Preparing data...</span></span>
+<span><span class="co">#&gt; Rolling...</span></span>
+<span><span class="co">#&gt; Group summaries...</span></span>
+<span><span class="co">#&gt; Missing data summaries...</span></span>
+<span><span class="co">#&gt; Done!</span></span>
+<span></span>
+<span><span class="co"># Get summary</span></span>
+<span><span class="va">prepared_data</span></span>
+<span><span class="co">#&gt; Athlete monitoring numeric data with the following characteristics:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 10 athletes:</span></span>
+<span><span class="co">#&gt; Alan McDonald, Ann Whitaker, Eve Black, Frank West, John Doe, Michael Peterson, Mike Smith, Peter Jackson, Stuart Rogan, Susan Kane </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 363 days:</span></span>
+<span><span class="co">#&gt; From 18263 to 18625 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 5200 total entries</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 0 missing entries</span></span>
+<span><span class="co">#&gt; 510 missing days</span></span>
+<span><span class="co">#&gt; 0 extended days</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 1 variables:</span></span>
+<span><span class="co">#&gt; Training Load </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 10 estimators:</span></span>
+<span><span class="co">#&gt; variable.value, acute.mean, acute.sd, acute.cv, chronic.mean, chronic.sd, chronic.cv, ACD, ACR, ES</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">prepared_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 10 × 16</span></span>
+<span><span class="co">#&gt;    athlete          variable     `Total entries` `Day entries` `Missing entries`</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;            &lt;chr&gt;                  &lt;dbl&gt;         &lt;int&gt;             &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 Alan McDonald    Training Lo…             520           363                 0</span></span>
+<span><span class="co">#&gt;  2 Ann Whitaker     Training Lo…             520           363                 0</span></span>
+<span><span class="co">#&gt;  3 Eve Black        Training Lo…             520           363                 0</span></span>
+<span><span class="co">#&gt;  4 Frank West       Training Lo…             520           363                 0</span></span>
+<span><span class="co">#&gt;  5 John Doe         Training Lo…             520           363                 0</span></span>
+<span><span class="co">#&gt;  6 Michael Peterson Training Lo…             520           363                 0</span></span>
+<span><span class="co">#&gt;  7 Mike Smith       Training Lo…             520           363                 0</span></span>
+<span><span class="co">#&gt;  8 Peter Jackson    Training Lo…             520           363                 0</span></span>
+<span><span class="co">#&gt;  9 Stuart Rogan     Training Lo…             520           363                 0</span></span>
+<span><span class="co">#&gt; 10 Susan Kane       Training Lo…             520           363                 0</span></span>
+<span><span class="co">#&gt; # ℹ 11 more variables: `Missing days` &lt;int&gt;, `Extended days` &lt;int&gt;,</span></span>
+<span><span class="co">#&gt; #   `Start date` &lt;dbl&gt;, `Stop date` &lt;dbl&gt;, Mean &lt;dbl&gt;, SD &lt;dbl&gt;, Min &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   Max &lt;dbl&gt;, Median &lt;dbl&gt;, IQR &lt;dbl&gt;, MAD &lt;dbl&gt;</span></span>
+<span></span>
+<span></span>
+<span><span class="co">## Plots</span></span>
+<span></span>
+<span><span class="co"># Table plot</span></span>
+<span><span class="co"># Produces formattable output with sparklines</span></span>
+<span><span class="co"># This will not work in the readme file, so just copy paste to your console</span></span>
+<span><span class="co"># plot(</span></span>
+<span><span class="co">#  prepared_data,</span></span>
+<span><span class="co">#  type = "table",</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co">#  # Use to filter out estimators</span></span>
+<span><span class="co">#  estimator_name = c("acute.mean", "chronic.mean", "ES", "chronic.sd", "chronic.cv"),</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co">#  # Use to filter out athlete</span></span>
+<span><span class="co">#  # athlete_name = NULL,</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co">#  # Use to filter out variables</span></span>
+<span><span class="co">#  #variable_name = NULL,</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co">#  # Show last entries</span></span>
+<span><span class="co">#  last_n = 42,</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co">#  # Round numbers</span></span>
+<span><span class="co">#  digits = 2</span></span>
+<span><span class="co"># )</span></span>
+<span></span>
+<span><span class="co"># Bar plot</span></span>
+<span><span class="co"># To plot group average</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">prepared_data</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"bar"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Plotting average across athletes. Please select athlete or use `trellis=TRUE`</span></span>
+<span><span class="co">#&gt; Warning: Removed 42 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_line()`).</span></span>
+<span><span class="co">#&gt; Removed 42 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-1.png" width="100%"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># To plot per athlete, use trellis argument</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>
-  <span class="va">prepared_data</span>,
-  type <span class="op">=</span> <span class="st">"bar"</span>,
-  trellis <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-<span class="co">#&gt; Warning: Removed 420 row(s) containing missing values (geom_path).</span>
-<span class="co">#&gt; Warning: Removed 420 row(s) containing missing values (geom_path).</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="co"># To plot per athlete, use trellis argument</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">prepared_data</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"bar"</span>,</span>
+<span>  trellis <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 420 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_line()`).</span></span>
+<span><span class="co">#&gt; Warning: Removed 420 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-2.png" width="100%"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># To filter out athletem variable and add Acute and Chronic lines to the group average:</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>
-  <span class="va">prepared_data</span>,
-  type <span class="op">=</span> <span class="st">"bar"</span>,
-
-  <span class="co"># To filter out athletes</span>
-  <span class="co"># athlete_name = NULL,</span>
-
-  <span class="co"># To filter out variable</span>
-  <span class="co"># variable_name = NULL,</span>
-
-  <span class="co"># Add acute mean</span>
-  acute_name <span class="op">=</span> <span class="st">"acute.mean"</span>,
-
-  <span class="co"># Add chronic mean</span>
-  chronic_name <span class="op">=</span> <span class="st">"chronic.mean"</span>,
-
-  <span class="co"># Plot last n entries/days</span>
-  last_n <span class="op">=</span> <span class="fl">42</span>
-<span class="op">)</span>
-<span class="co">#&gt; Plotting average across athletes. Please select athlete or use `trellis=TRUE`</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="co"># To filter out athletem variable and add Acute and Chronic lines to the group average:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">prepared_data</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"bar"</span>,</span>
+<span></span>
+<span>  <span class="co"># To filter out athletes</span></span>
+<span>  <span class="co"># athlete_name = NULL,</span></span>
+<span></span>
+<span>  <span class="co"># To filter out variable</span></span>
+<span>  <span class="co"># variable_name = NULL,</span></span>
+<span></span>
+<span>  <span class="co"># Add acute mean</span></span>
+<span>  acute_name <span class="op">=</span> <span class="st">"acute.mean"</span>,</span>
+<span></span>
+<span>  <span class="co"># Add chronic mean</span></span>
+<span>  chronic_name <span class="op">=</span> <span class="st">"chronic.mean"</span>,</span>
+<span></span>
+<span>  <span class="co"># Plot last n entries/days</span></span>
+<span>  last_n <span class="op">=</span> <span class="fl">42</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Plotting average across athletes. Please select athlete or use `trellis=TRUE`</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-3.png" width="100%"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># If you want to plot for each athlete, use trellis=TRUE</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>
-  <span class="va">prepared_data</span>,
-  type <span class="op">=</span> <span class="st">"bar"</span>,
-  acute_name <span class="op">=</span> <span class="st">"acute.mean"</span>,
-  chronic_name <span class="op">=</span> <span class="st">"chronic.mean"</span>,
-  last_n <span class="op">=</span> <span class="fl">42</span>,
-  trellis <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="co"># If you want to plot for each athlete, use trellis=TRUE</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">prepared_data</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"bar"</span>,</span>
+<span>  acute_name <span class="op">=</span> <span class="st">"acute.mean"</span>,</span>
+<span>  chronic_name <span class="op">=</span> <span class="st">"chronic.mean"</span>,</span>
+<span>  last_n <span class="op">=</span> <span class="fl">42</span>,</span>
+<span>  trellis <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-4.png" width="100%"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Line plots</span>
-<span class="co"># These plots represent summary of the rollins estimators</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>
-  <span class="va">prepared_data</span>,
-  type <span class="op">=</span> <span class="st">"line"</span>,
-
-  <span class="co"># To filter out athletes</span>
-  <span class="co"># athlete_name = NULL,</span>
-
-  <span class="co"># To filter out variables</span>
-  <span class="co"># variable_name = NULL,</span>
-
-  <span class="co"># To filter out estimators</span>
-  <span class="co"># estimator_name = NULL,</span>
-
-  <span class="co"># Tell graph where the lower group estimator is</span>
-  <span class="co"># which is in this case 25%th percentile of the group</span>
-  group_lower_name <span class="op">=</span> <span class="st">"group.lower"</span>,
-
-  <span class="co"># The name of the centrality estimator of the group</span>
-  group_central_name <span class="op">=</span> <span class="st">"group.median"</span>,
-
-  <span class="co"># Tell graph where the upper group estimator is</span>
-  <span class="co"># which is in this case 75%th percentile of the group</span>
-  group_upper_name <span class="op">=</span> <span class="st">"group.upper"</span>,
-
-  <span class="co"># Use trellis if you do not plot for a single individual</span>
-  trellis <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Line plots</span></span>
+<span><span class="co"># These plots represent summary of the rollins estimators</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">prepared_data</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"line"</span>,</span>
+<span></span>
+<span>  <span class="co"># To filter out athletes</span></span>
+<span>  <span class="co"># athlete_name = NULL,</span></span>
+<span></span>
+<span>  <span class="co"># To filter out variables</span></span>
+<span>  <span class="co"># variable_name = NULL,</span></span>
+<span></span>
+<span>  <span class="co"># To filter out estimators</span></span>
+<span>  <span class="co"># estimator_name = NULL,</span></span>
+<span></span>
+<span>  <span class="co"># Tell graph where the lower group estimator is</span></span>
+<span>  <span class="co"># which is in this case 25%th percentile of the group</span></span>
+<span>  group_lower_name <span class="op">=</span> <span class="st">"group.lower"</span>,</span>
+<span></span>
+<span>  <span class="co"># The name of the centrality estimator of the group</span></span>
+<span>  group_central_name <span class="op">=</span> <span class="st">"group.median"</span>,</span>
+<span></span>
+<span>  <span class="co"># Tell graph where the upper group estimator is</span></span>
+<span>  <span class="co"># which is in this case 75%th percentile of the group</span></span>
+<span>  group_upper_name <span class="op">=</span> <span class="st">"group.upper"</span>,</span>
+<span></span>
+<span>  <span class="co"># Use trellis if you do not plot for a single individual</span></span>
+<span>  trellis <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-5.png" width="100%"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Previous chart looks messy because it plot all athletes</span>
-<span class="co"># To avoid that, filter out only one athlete</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>
-  <span class="va">prepared_data</span>,
-  type <span class="op">=</span> <span class="st">"line"</span>,
-
-  <span class="co"># To filter out athletes</span>
-  athlete_name <span class="op">=</span> <span class="st">"Ann Whitaker"</span>,
-  group_lower_name <span class="op">=</span> <span class="st">"group.lower"</span>,
-  group_central_name <span class="op">=</span> <span class="st">"group.median"</span>,
-  group_upper_name <span class="op">=</span> <span class="st">"group.upper"</span>,
-  trellis <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Previous chart looks messy because it plot all athletes</span></span>
+<span><span class="co"># To avoid that, filter out only one athlete</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">prepared_data</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"line"</span>,</span>
+<span></span>
+<span>  <span class="co"># To filter out athletes</span></span>
+<span>  athlete_name <span class="op">=</span> <span class="st">"Ann Whitaker"</span>,</span>
+<span>  group_lower_name <span class="op">=</span> <span class="st">"group.lower"</span>,</span>
+<span>  group_central_name <span class="op">=</span> <span class="st">"group.median"</span>,</span>
+<span>  group_upper_name <span class="op">=</span> <span class="st">"group.upper"</span>,</span>
+<span>  trellis <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-6.png" width="100%"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="co"># Calendar heatmap plot</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>
-  <span class="va">prepared_data</span>,
-  type <span class="op">=</span> <span class="st">"calendar"</span>,
-  
-  <span class="co"># To filter out athletes</span>
-  athlete_name <span class="op">=</span> <span class="st">"Ann Whitaker"</span>,
-  
-  <span class="co"># To filter out variables</span>
-  variable_name <span class="op">=</span> <span class="st">"Training Load"</span>,
-  
-  <span class="co"># To print estimator</span>
-  estimator_name <span class="op">=</span> <span class="st">"variable.value"</span>, <span class="co"># Or use "entries"</span>
-  
-  <span class="co"># To filter out last days</span>
-  last_n <span class="op">=</span> <span class="fl">365</span>,
-  
-  <span class="co"># To setup colors</span>
-  low_color <span class="op">=</span> <span class="st">"white"</span>,
-  high_color <span class="op">=</span> <span class="st">"red"</span>,
-  na_color <span class="op">=</span> <span class="st">"grey50"</span>,
-  
-  <span class="co"># Should the whole year be plotted?</span>
-  <span class="co"># Otherwise full months are plotted</span>
-  full_year <span class="op">=</span> <span class="cn">TRUE</span>,
-  
-  <span class="co"># Should year label be plotted? </span>
-  <span class="co"># in the case of multiple years involved</span>
-  <span class="co"># it is always plotted</span>
-  year_label <span class="op">=</span> <span class="cn">FALSE</span>,
-  
-  <span class="co"># Short weekdays?</span>
-  short_weekday <span class="op">=</span> <span class="cn">TRUE</span>,
-  
-  <span class="co"># Label size</span>
-  label_size <span class="op">=</span> <span class="fl">2</span>,
-  
-  <span class="co"># Aggregation function in the case multiple athletes/variables/levels are used</span>
-  aggregate_func <span class="op">=</span> <span class="va">mean</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="co"># Calendar heatmap plot</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">prepared_data</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"calendar"</span>,</span>
+<span>  </span>
+<span>  <span class="co"># To filter out athletes</span></span>
+<span>  athlete_name <span class="op">=</span> <span class="st">"Ann Whitaker"</span>,</span>
+<span>  </span>
+<span>  <span class="co"># To filter out variables</span></span>
+<span>  variable_name <span class="op">=</span> <span class="st">"Training Load"</span>,</span>
+<span>  </span>
+<span>  <span class="co"># To print estimator</span></span>
+<span>  estimator_name <span class="op">=</span> <span class="st">"variable.value"</span>, <span class="co"># Or use "entries"</span></span>
+<span>  </span>
+<span>  <span class="co"># To filter out last days</span></span>
+<span>  last_n <span class="op">=</span> <span class="fl">365</span>,</span>
+<span>  </span>
+<span>  <span class="co"># To setup colors</span></span>
+<span>  low_color <span class="op">=</span> <span class="st">"white"</span>,</span>
+<span>  high_color <span class="op">=</span> <span class="st">"red"</span>,</span>
+<span>  na_color <span class="op">=</span> <span class="st">"grey50"</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Should the whole year be plotted?</span></span>
+<span>  <span class="co"># Otherwise full months are plotted</span></span>
+<span>  full_year <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Should year label be plotted? </span></span>
+<span>  <span class="co"># in the case of multiple years involved</span></span>
+<span>  <span class="co"># it is always plotted</span></span>
+<span>  year_label <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Short weekdays?</span></span>
+<span>  short_weekday <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Label size</span></span>
+<span>  label_size <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Aggregation function in the case multiple athletes/variables/levels are used</span></span>
+<span>  aggregate_func <span class="op">=</span> <span class="va">mean</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-7.png" width="100%"></p>
-<div id="example-for-nominal-scale" class="section level3">
-<h3 class="hasAnchor">
-<a href="#example-for-nominal-scale" class="anchor"></a>Example for nominal scale</h3>
+<div class="section level3">
+<h3 id="example-for-nominal-scale">Example for nominal scale<a class="anchor" aria-label="anchor" href="#example-for-nominal-scale"></a>
+</h3>
 <p>Sometimes the data comes in nominal scale (e.g., Hard, Medium, Easy). Analysis of this type of data involves analysis of each levels independently, which results in rolling counts or rolling proportions.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Create nominal variable</span>
-<span class="va">monitoring</span><span class="op">$</span><span class="va">Value_nominal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span><span class="op">(</span>
-  <span class="va">monitoring</span><span class="op">$</span><span class="va">Value</span>,
-  breaks <span class="op">=</span> <span class="fl">5</span>,
-  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Very Easy"</span>, <span class="st">"Easy"</span>, <span class="st">"Medium"</span>, <span class="st">"Hard"</span>, <span class="st">"Very Hard"</span><span class="op">)</span>,
-  include.lowest <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-
-<span class="co"># Create a missing value</span>
-<span class="va">monitoring</span><span class="op">$</span><span class="va">Value_nominal</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span>
-
-<span class="co"># Run the athlete monitoring data preparation</span>
-<span class="va">prepared_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/prepare.html">prepare</a></span><span class="op">(</span>
-  data <span class="op">=</span> <span class="va">monitoring</span>,
-  athlete <span class="op">=</span> <span class="st">"Full Name"</span>,
-  date <span class="op">=</span> <span class="st">"Date"</span>,
-  variable <span class="op">=</span> <span class="st">"Variable"</span>,
-  value <span class="op">=</span> <span class="st">"Value_nominal"</span>,
-  acute <span class="op">=</span> <span class="fl">7</span>,
-  chronic <span class="op">=</span> <span class="fl">42</span>,
-
-  <span class="co"># How should be missing entry treated?</span>
-  NA_session <span class="op">=</span> <span class="st">"&lt;&lt;&lt;Session Missed&gt;&gt;&gt;"</span>,
-
-  <span class="co"># How should missing days (i.e. no entries) be treated?</span>
-  NA_day <span class="op">=</span> <span class="st">"&lt;&lt;&lt;Day Missed&gt;&gt;&gt;"</span>,
-
-  <span class="co"># How should be multiple day entries summarised?</span>
-  <span class="co"># With "load", it is a "sum", with other metrics that</span>
-  <span class="co"># do not aggregate, it can me "mean"</span>
-  day_aggregate <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  <span class="op">}</span>,
-
-  <span class="co"># Rolling estimators for Acute and Chronic windows</span>
-  rolling_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
-      <span class="st">"mean"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-      <span class="st">"sd"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-      <span class="st">"cv"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-    <span class="op">)</span>
-  <span class="op">}</span>,
-
-  <span class="co"># Additional estimator post-rolling</span>
-  posthoc_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">data</span><span class="op">$</span><span class="va">ACD</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">acute.mean</span> <span class="op">-</span> <span class="va">data</span><span class="op">$</span><span class="va">chronic.mean</span>
-    <span class="va">data</span><span class="op">$</span><span class="va">ACR</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">acute.mean</span> <span class="op">/</span> <span class="va">data</span><span class="op">$</span><span class="va">chronic.mean</span>
-    <span class="va">data</span><span class="op">$</span><span class="va">ES</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">ACD</span> <span class="op">/</span> <span class="va">data</span><span class="op">$</span><span class="va">chronic.sd</span>
-
-    <span class="co"># Make sure to return the data</span>
-    <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
-  <span class="op">}</span>,
-
-  <span class="co"># Group summary estimators</span>
-  group_summary_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
-      <span class="st">"median"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-      <span class="st">"lower"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">0.25</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,
-      <span class="st">"upper"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">0.75</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
-    <span class="op">)</span>
-  <span class="op">}</span>
-<span class="op">)</span>
-<span class="co">#&gt; Using nominal approach: column 'value' in the 'data' provided is not numeric. It will be treated as nominal and each level will be analyzed as separate variable using rolling counts approach.</span>
-<span class="co">#&gt; Preparing data...</span>
-<span class="co">#&gt; Rolling...</span>
-<span class="co">#&gt; Group summaries...</span>
-<span class="co">#&gt; Missing data summaries...</span>
-<span class="co">#&gt; Done!</span>
-
-<span class="co"># Get summary</span>
-<span class="va">prepared_data</span>
-<span class="co">#&gt; Athlete monitoring nominal data with the following characteristics:</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 10 athletes:</span>
-<span class="co">#&gt; Alan McDonald, Ann Whitaker, Eve Black, Frank West, John Doe, Michael Peterson, Mike Smith, Peter Jackson, Stuart Rogan, Susan Kane </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 363 days:</span>
-<span class="co">#&gt; From 18263 to 18625 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 39970 total entries</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 1 missing entries</span>
-<span class="co">#&gt; 510 missing days</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 1 variables:</span>
-<span class="co">#&gt; Training Load </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 7 levels:</span>
-<span class="co">#&gt; &lt;&lt;&lt;Day Missed&gt;&gt;&gt;, &lt;&lt;&lt;Session Missed&gt;&gt;&gt;, Easy, Hard, Medium, Very Easy, Very Hard </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 10 estimators:</span>
-<span class="co">#&gt; variable.value, acute.mean, acute.sd, acute.cv, chronic.mean, chronic.sd, chronic.cv, ACD, ACR, ES</span>
-
-<span class="co"># Nominal data</span>
-<span class="co"># Create nominal variable</span>
-<span class="va">monitoring</span><span class="op">$</span><span class="va">Value_nominal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span><span class="op">(</span>
-  <span class="va">monitoring</span><span class="op">$</span><span class="va">Value</span>,
-  breaks <span class="op">=</span> <span class="fl">5</span>,
-  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Very Easy"</span>, <span class="st">"Easy"</span>, <span class="st">"Medium"</span>, <span class="st">"Hard"</span>, <span class="st">"Very Hard"</span><span class="op">)</span>,
-  include.lowest <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-<span class="co"># Run the athlete monitoring data preparation</span>
-<span class="va">prepared_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/prepare.html">prepare</a></span><span class="op">(</span>
-  data <span class="op">=</span> <span class="va">monitoring</span>,
-  athlete <span class="op">=</span> <span class="st">"Full Name"</span>,
-  date <span class="op">=</span> <span class="st">"Date"</span>,
-  variable <span class="op">=</span> <span class="st">"Variable"</span>,
-  value <span class="op">=</span> <span class="st">"Value_nominal"</span>,
-  acute <span class="op">=</span> <span class="fl">7</span>,
-  chronic <span class="op">=</span> <span class="fl">42</span>,
-
-  <span class="co"># How should be missing entry treated?</span>
-  NA_session <span class="op">=</span> <span class="st">"&lt;&lt;&lt;Session Missed&gt;&gt;&gt;"</span>,
-
-  <span class="co"># How should missing days (i.e. no entries) be treated?</span>
-  NA_day <span class="op">=</span> <span class="st">"&lt;&lt;&lt;Day Missed&gt;&gt;&gt;"</span>,
-
-  <span class="co"># How should be multiple day entries summarised?</span>
-  <span class="co"># This is different with levels, for example</span>
-  <span class="co"># when there are two sessions, one is Low and one Hard</span>
-  <span class="co"># if you use mean, then Low and Hard will be 0.5, with sum</span>
-  <span class="co"># both will be 0.5, in which case the level probabilities will be</span>
-  <span class="co"># summed to 1</span>
-  day_aggregate <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  <span class="op">}</span>,
-
-  <span class="co"># Rolling estimators for Acute and Chronic windows</span>
-  rolling_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
-      <span class="st">"prop"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-    <span class="op">)</span>
-  <span class="op">}</span>,
-
-  <span class="co"># Additional estimator post-rolling</span>
-  posthoc_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">data</span><span class="op">$</span><span class="va">ACD</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">acute.prop</span> <span class="op">-</span> <span class="va">data</span><span class="op">$</span><span class="va">chronic.prop</span>
-    <span class="va">data</span><span class="op">$</span><span class="va">ACR</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">acute.prop</span> <span class="op">/</span> <span class="va">data</span><span class="op">$</span><span class="va">chronic.prop</span>
-
-    <span class="co"># Make sure to return the data</span>
-    <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
-  <span class="op">}</span>,
-
-  <span class="co"># Group summary estimators</span>
-  group_summary_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
-      <span class="st">"median"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-      <span class="st">"lower"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">0.25</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,
-      <span class="st">"upper"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">0.75</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
-    <span class="op">)</span>
-  <span class="op">}</span>
-<span class="op">)</span>
-<span class="co">#&gt; Using nominal approach: column 'value' in the 'data' provided is not numeric. It will be treated as nominal and each level will be analyzed as separate variable using rolling counts approach.</span>
-<span class="co">#&gt; Preparing data...</span>
-<span class="co">#&gt; Rolling...</span>
-<span class="co">#&gt; Group summaries...</span>
-<span class="co">#&gt; Missing data summaries...</span>
-<span class="co">#&gt; Done!</span>
-
-<span class="va">prepared_data</span>
-<span class="co">#&gt; Athlete monitoring nominal data with the following characteristics:</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 10 athletes:</span>
-<span class="co">#&gt; Alan McDonald, Ann Whitaker, Eve Black, Frank West, John Doe, Michael Peterson, Mike Smith, Peter Jackson, Stuart Rogan, Susan Kane </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 363 days:</span>
-<span class="co">#&gt; From 18263 to 18625 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 34260 total entries</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 0 missing entries</span>
-<span class="co">#&gt; 510 missing days</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 1 variables:</span>
-<span class="co">#&gt; Training Load </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 6 levels:</span>
-<span class="co">#&gt; &lt;&lt;&lt;Day Missed&gt;&gt;&gt;, Easy, Hard, Medium, Very Easy, Very Hard </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; 5 estimators:</span>
-<span class="co">#&gt; variable.value, acute.prop, chronic.prop, ACD, ACR</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">prepared_data</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 60 x 10</span>
-<span class="co">#&gt;    athlete    variable   level    `Total entries` `Day entries` `Missing entrie…</span>
-<span class="co">#&gt;    &lt;chr&gt;      &lt;chr&gt;      &lt;fct&gt;              &lt;int&gt;         &lt;int&gt;            &lt;int&gt;</span>
-<span class="co">#&gt;  1 Alan McDo… Training … Very Ea…             571           363                0</span>
-<span class="co">#&gt;  2 Alan McDo… Training … Easy                 571           363                0</span>
-<span class="co">#&gt;  3 Alan McDo… Training … Medium               571           363                0</span>
-<span class="co">#&gt;  4 Alan McDo… Training … Hard                 571           363                0</span>
-<span class="co">#&gt;  5 Alan McDo… Training … Very Ha…             571           363                0</span>
-<span class="co">#&gt;  6 Alan McDo… Training … &lt;&lt;&lt;Day …             571           363                0</span>
-<span class="co">#&gt;  7 Ann Whita… Training … Very Ea…             571           363                0</span>
-<span class="co">#&gt;  8 Ann Whita… Training … Easy                 571           363                0</span>
-<span class="co">#&gt;  9 Ann Whita… Training … Medium               571           363                0</span>
-<span class="co">#&gt; 10 Ann Whita… Training … Hard                 571           363                0</span>
-<span class="co">#&gt; # … with 50 more rows, and 4 more variables: Missing days &lt;int&gt;,</span>
-<span class="co">#&gt; #   Start date &lt;date&gt;, Stop date &lt;date&gt;, Proportion &lt;dbl&gt;</span>
-
-<span class="co"># Plots</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>
-  <span class="va">prepared_data</span>,
-  type <span class="op">=</span> <span class="st">"line"</span>,
-
-  <span class="co"># To filter out athletes</span>
-  athlete_name <span class="op">=</span> <span class="st">"Ann Whitaker"</span>,
-
-  <span class="co"># To filter out variables</span>
-  variable_name <span class="op">=</span> <span class="st">"Training Load"</span>,
-
-  <span class="co"># To filter out estimators</span>
-  estimator_name <span class="op">=</span> <span class="st">"acute.prop"</span>,
-  group_lower_name <span class="op">=</span> <span class="st">"group.lower"</span>,
-  group_central_name <span class="op">=</span> <span class="st">"group.median"</span>,
-  group_upper_name <span class="op">=</span> <span class="st">"group.upper"</span>,
-  trellis <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Create nominal variable</span></span>
+<span><span class="va">monitoring</span><span class="op">$</span><span class="va">Value_nominal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span></span>
+<span>  <span class="va">monitoring</span><span class="op">$</span><span class="va">Value</span>,</span>
+<span>  breaks <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Very Easy"</span>, <span class="st">"Easy"</span>, <span class="st">"Medium"</span>, <span class="st">"Hard"</span>, <span class="st">"Very Hard"</span><span class="op">)</span>,</span>
+<span>  include.lowest <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Create a missing value</span></span>
+<span><span class="va">monitoring</span><span class="op">$</span><span class="va">Value_nominal</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
+<span></span>
+<span><span class="co"># Run the athlete monitoring data preparation</span></span>
+<span><span class="va">prepared_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/prepare.html">prepare</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">monitoring</span>,</span>
+<span>  athlete <span class="op">=</span> <span class="st">"Full Name"</span>,</span>
+<span>  date <span class="op">=</span> <span class="st">"Date"</span>,</span>
+<span>  variable <span class="op">=</span> <span class="st">"Variable"</span>,</span>
+<span>  value <span class="op">=</span> <span class="st">"Value_nominal"</span>,</span>
+<span>  acute <span class="op">=</span> <span class="fl">7</span>,</span>
+<span>  chronic <span class="op">=</span> <span class="fl">42</span>,</span>
+<span></span>
+<span>  <span class="co"># How should be missing entry treated?</span></span>
+<span>  NA_session <span class="op">=</span> <span class="st">"&lt;&lt;&lt;Session Missed&gt;&gt;&gt;"</span>,</span>
+<span></span>
+<span>  <span class="co"># How should missing days (i.e. no entries) be treated?</span></span>
+<span>  NA_day <span class="op">=</span> <span class="st">"&lt;&lt;&lt;Day Missed&gt;&gt;&gt;"</span>,</span>
+<span></span>
+<span>  <span class="co"># How should be multiple day entries summarised?</span></span>
+<span>  <span class="co"># With "load", it is a "sum", with other metrics that</span></span>
+<span>  <span class="co"># do not aggregate, it can me "mean"</span></span>
+<span>  day_aggregate <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span></span>
+<span>  <span class="co"># Rolling estimators for Acute and Chronic windows</span></span>
+<span>  rolling_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"mean"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>      <span class="st">"sd"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>      <span class="st">"cv"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span></span>
+<span>  <span class="co"># Additional estimator post-rolling</span></span>
+<span>  posthoc_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">data</span><span class="op">$</span><span class="va">ACD</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">acute.mean</span> <span class="op">-</span> <span class="va">data</span><span class="op">$</span><span class="va">chronic.mean</span></span>
+<span>    <span class="va">data</span><span class="op">$</span><span class="va">ACR</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">acute.mean</span> <span class="op">/</span> <span class="va">data</span><span class="op">$</span><span class="va">chronic.mean</span></span>
+<span>    <span class="va">data</span><span class="op">$</span><span class="va">ES</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">ACD</span> <span class="op">/</span> <span class="va">data</span><span class="op">$</span><span class="va">chronic.sd</span></span>
+<span></span>
+<span>    <span class="co"># Make sure to return the data</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span></span>
+<span>  <span class="co"># Group summary estimators</span></span>
+<span>  group_summary_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"median"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>      <span class="st">"lower"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">0.25</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>      <span class="st">"upper"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">0.75</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Using nominal approach: column 'value' in the 'data' provided is not numeric. It will be treated as nominal and each level will be analyzed as separate variable using rolling counts approach.</span></span>
+<span><span class="co">#&gt; Preparing data...</span></span>
+<span><span class="co">#&gt; Rolling...</span></span>
+<span><span class="co">#&gt; Group summaries...</span></span>
+<span><span class="co">#&gt; Missing data summaries...</span></span>
+<span><span class="co">#&gt; Done!</span></span>
+<span></span>
+<span><span class="co"># Get summary</span></span>
+<span><span class="va">prepared_data</span></span>
+<span><span class="co">#&gt; Athlete monitoring nominal data with the following characteristics:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 10 athletes:</span></span>
+<span><span class="co">#&gt; Alan McDonald, Ann Whitaker, Eve Black, Frank West, John Doe, Michael Peterson, Mike Smith, Peter Jackson, Stuart Rogan, Susan Kane </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 363 days:</span></span>
+<span><span class="co">#&gt; From 18263 to 18625 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 39970 total entries</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 1 missing entries</span></span>
+<span><span class="co">#&gt; 510 missing days</span></span>
+<span><span class="co">#&gt; 0 extended days</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 1 variables:</span></span>
+<span><span class="co">#&gt; Training Load </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 7 levels:</span></span>
+<span><span class="co">#&gt; &lt;&lt;&lt;Day Missed&gt;&gt;&gt;, &lt;&lt;&lt;Session Missed&gt;&gt;&gt;, Easy, Hard, Medium, Very Easy, Very Hard </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 10 estimators:</span></span>
+<span><span class="co">#&gt; variable.value, acute.mean, acute.sd, acute.cv, chronic.mean, chronic.sd, chronic.cv, ACD, ACR, ES</span></span>
+<span></span>
+<span><span class="co"># Nominal data</span></span>
+<span><span class="co"># Create nominal variable</span></span>
+<span><span class="va">monitoring</span><span class="op">$</span><span class="va">Value_nominal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span></span>
+<span>  <span class="va">monitoring</span><span class="op">$</span><span class="va">Value</span>,</span>
+<span>  breaks <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Very Easy"</span>, <span class="st">"Easy"</span>, <span class="st">"Medium"</span>, <span class="st">"Hard"</span>, <span class="st">"Very Hard"</span><span class="op">)</span>,</span>
+<span>  include.lowest <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run the athlete monitoring data preparation</span></span>
+<span><span class="va">prepared_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/prepare.html">prepare</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">monitoring</span>,</span>
+<span>  athlete <span class="op">=</span> <span class="st">"Full Name"</span>,</span>
+<span>  date <span class="op">=</span> <span class="st">"Date"</span>,</span>
+<span>  variable <span class="op">=</span> <span class="st">"Variable"</span>,</span>
+<span>  value <span class="op">=</span> <span class="st">"Value_nominal"</span>,</span>
+<span>  acute <span class="op">=</span> <span class="fl">7</span>,</span>
+<span>  chronic <span class="op">=</span> <span class="fl">42</span>,</span>
+<span></span>
+<span>  <span class="co"># How should be missing entry treated?</span></span>
+<span>  NA_session <span class="op">=</span> <span class="st">"&lt;&lt;&lt;Session Missed&gt;&gt;&gt;"</span>,</span>
+<span></span>
+<span>  <span class="co"># How should missing days (i.e. no entries) be treated?</span></span>
+<span>  NA_day <span class="op">=</span> <span class="st">"&lt;&lt;&lt;Day Missed&gt;&gt;&gt;"</span>,</span>
+<span></span>
+<span>  <span class="co"># How should be multiple day entries summarised?</span></span>
+<span>  <span class="co"># This is different with levels, for example</span></span>
+<span>  <span class="co"># when there are two sessions, one is Low and one Hard</span></span>
+<span>  <span class="co"># if you use mean, then Low and Hard will be 0.5, with sum</span></span>
+<span>  <span class="co"># both will be 0.5, in which case the level probabilities will be</span></span>
+<span>  <span class="co"># summed to 1</span></span>
+<span>  day_aggregate <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span></span>
+<span>  <span class="co"># Rolling estimators for Acute and Chronic windows</span></span>
+<span>  rolling_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"prop"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span></span>
+<span>  <span class="co"># Additional estimator post-rolling</span></span>
+<span>  posthoc_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">data</span><span class="op">$</span><span class="va">ACD</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">acute.prop</span> <span class="op">-</span> <span class="va">data</span><span class="op">$</span><span class="va">chronic.prop</span></span>
+<span>    <span class="va">data</span><span class="op">$</span><span class="va">ACR</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">acute.prop</span> <span class="op">/</span> <span class="va">data</span><span class="op">$</span><span class="va">chronic.prop</span></span>
+<span></span>
+<span>    <span class="co"># Make sure to return the data</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span></span>
+<span>  <span class="co"># Group summary estimators</span></span>
+<span>  group_summary_estimators <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"median"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>      <span class="st">"lower"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">0.25</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>      <span class="st">"upper"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">0.75</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Using nominal approach: column 'value' in the 'data' provided is not numeric. It will be treated as nominal and each level will be analyzed as separate variable using rolling counts approach.</span></span>
+<span><span class="co">#&gt; Preparing data...</span></span>
+<span><span class="co">#&gt; Rolling...</span></span>
+<span><span class="co">#&gt; Group summaries...</span></span>
+<span><span class="co">#&gt; Missing data summaries...</span></span>
+<span><span class="co">#&gt; Done!</span></span>
+<span></span>
+<span><span class="va">prepared_data</span></span>
+<span><span class="co">#&gt; Athlete monitoring nominal data with the following characteristics:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 10 athletes:</span></span>
+<span><span class="co">#&gt; Alan McDonald, Ann Whitaker, Eve Black, Frank West, John Doe, Michael Peterson, Mike Smith, Peter Jackson, Stuart Rogan, Susan Kane </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 363 days:</span></span>
+<span><span class="co">#&gt; From 18263 to 18625 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 34260 total entries</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 0 missing entries</span></span>
+<span><span class="co">#&gt; 510 missing days</span></span>
+<span><span class="co">#&gt; 0 extended days</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 1 variables:</span></span>
+<span><span class="co">#&gt; Training Load </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 6 levels:</span></span>
+<span><span class="co">#&gt; &lt;&lt;&lt;Day Missed&gt;&gt;&gt;, Easy, Hard, Medium, Very Easy, Very Hard </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 5 estimators:</span></span>
+<span><span class="co">#&gt; variable.value, acute.prop, chronic.prop, ACD, ACR</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">prepared_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 60 × 11</span></span>
+<span><span class="co">#&gt;    athlete       variable  level `Total entries` `Day entries` `Missing entries`</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;     &lt;chr&gt;           &lt;int&gt;         &lt;int&gt;             &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 Alan McDonald Training… &lt;&lt;&lt;D…             571           363                 0</span></span>
+<span><span class="co">#&gt;  2 Alan McDonald Training… Easy              571           363                 0</span></span>
+<span><span class="co">#&gt;  3 Alan McDonald Training… Hard              571           363                 0</span></span>
+<span><span class="co">#&gt;  4 Alan McDonald Training… Medi…             571           363                 0</span></span>
+<span><span class="co">#&gt;  5 Alan McDonald Training… Very…             571           363                 0</span></span>
+<span><span class="co">#&gt;  6 Alan McDonald Training… Very…             571           363                 0</span></span>
+<span><span class="co">#&gt;  7 Ann Whitaker  Training… &lt;&lt;&lt;D…             571           363                 0</span></span>
+<span><span class="co">#&gt;  8 Ann Whitaker  Training… Easy              571           363                 0</span></span>
+<span><span class="co">#&gt;  9 Ann Whitaker  Training… Hard              571           363                 0</span></span>
+<span><span class="co">#&gt; 10 Ann Whitaker  Training… Medi…             571           363                 0</span></span>
+<span><span class="co">#&gt; # ℹ 50 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 5 more variables: `Missing days` &lt;int&gt;, `Extended days` &lt;int&gt;,</span></span>
+<span><span class="co">#&gt; #   `Start date` &lt;dbl&gt;, `Stop date` &lt;dbl&gt;, Proportion &lt;dbl&gt;</span></span>
+<span></span>
+<span><span class="co"># Plots</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">prepared_data</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"line"</span>,</span>
+<span></span>
+<span>  <span class="co"># To filter out athletes</span></span>
+<span>  athlete_name <span class="op">=</span> <span class="st">"Ann Whitaker"</span>,</span>
+<span></span>
+<span>  <span class="co"># To filter out variables</span></span>
+<span>  variable_name <span class="op">=</span> <span class="st">"Training Load"</span>,</span>
+<span></span>
+<span>  <span class="co"># To filter out estimators</span></span>
+<span>  estimator_name <span class="op">=</span> <span class="st">"acute.prop"</span>,</span>
+<span>  group_lower_name <span class="op">=</span> <span class="st">"group.lower"</span>,</span>
+<span>  group_central_name <span class="op">=</span> <span class="st">"group.median"</span>,</span>
+<span>  group_upper_name <span class="op">=</span> <span class="st">"group.upper"</span>,</span>
+<span>  trellis <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-3-1.png" width="100%"></p>
 </div>
 </div>
-<div id="further-information" class="section level2">
-<h2 class="hasAnchor">
-<a href="#further-information" class="anchor"></a>Further information</h2>
-<p>To find out more, please check the <a href="https://complementarytraining.net/athlete-monitoring-data-course-course-description/">Athlete Monitoring Course</a>, which covers a lot of ground and the utilization of the <code>athletemonitoring</code> package in depth.</p>
+<div class="section level2">
+<h2 id="further-information">Further information<a class="anchor" aria-label="anchor" href="#further-information"></a>
+</h2>
+<p>To find out more, please check the <a href="https://complementarytraining.net/athlete-monitoring-data-course-course-description/" class="external-link">Athlete Monitoring Course</a>, which covers a lot of ground and the utilization of the <code>athletemonitoring</code> package in depth.</p>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/mladenjovanovic/athletemonitoring/">https://​github.com/​mladenjovanovic/​athletemonitoring/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/mladenjovanovic/athletemonitoring/issues">https://​github.com/​mladenjovanovic/​athletemonitoring/​issues</a>
-</li>
-</ul>
-</div>
-<div class="license">
-<h2>License</h2>
-<ul class="list-unstyled">
-<li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
-</ul>
-</div>
-<div class="citation">
-<h2>Citation</h2>
-<ul class="list-unstyled">
-<li><a href="authors.html">Citing athletemonitoring</a></li>
-</ul>
-</div>
-<div class="developers">
-<h2>Developers</h2>
-<ul class="list-unstyled">
-<li>Mladen Jovanović <br><small class="roles"> Author, maintainer </small>  <br><small>(complementarytraining.net)</small>
-</li>
+<li><a href="https://github.com/mladenjovanovic/athletemonitoring/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/mladenjovanovic/athletemonitoring/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="license">
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://zenodo.org/badge/latestdoi/298780725"><img src="https://zenodo.org/badge/298780725.svg" alt="DOI"></a></li>
-<li><a href="https://CRAN.R-project.org/package=athletemonitoring"><img src="https://www.r-pkg.org/badges/version/athletemonitoring" alt="CRAN status"></a></li>
+<li><a href="LICENSE.html">Full license</a></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing athletemonitoring</a></li>
+</ul>
 </div>
+
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
+<ul class="list-unstyled">
+<li>Mladen Jovanović <br><small class="roles"> Author, maintainer </small>  </li>
+<li><a href="authors.html">More about authors...</a></li>
+</ul>
+</div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://zenodo.org/badge/latestdoi/298780725" class="external-link"><img src="https://zenodo.org/badge/298780725.svg" alt="DOI"></a></li>
+<li><a href="https://CRAN.R-project.org/package=athletemonitoring" class="external-link"><img src="https://www.r-pkg.org/badges/version/athletemonitoring" alt="CRAN status"></a></li>
+</ul>
+</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Mladen Jovanović.</p>
+  <p></p>
+<p>Developed by Mladen Jovanović.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -674,6 +687,8 @@
 
   
 
+
+  
 
   </body>
 </html>
