@@ -2,12 +2,12 @@ library(tidyverse)
 
 df <- tribble(
   ~athlete, ~day, ~variable, ~value,
-  "A01", 1, "V01", "10",
-  "A01", 2, "V01", "12",
-  "A01", 3, "V01", "13",
-  "A01", 4, "V02", "0",
-  "A02", 0, "V01", "15",
-  "A03", 5, "V03", "17"
+  "A01", 1, "V01", "Low",
+  #"A01", 2, "V01", "Low",
+  "A01", 3, "V01", NA,
+  "A01", 4, "V02", "Low",
+  "A02", 0, "V01", "Medium",
+  "A03", 5, "V03", "High"
 )
 
 prepared_data <- prepare(
@@ -16,10 +16,13 @@ prepared_data <- prepare(
   date = "day",
   variable = "variable",
   value = "value",
-  acute = 7,
-  chronic = 42,
-  extend = "both"
+  acute = 7, NA_session = "NA session", NA_day = "NA Day",
+  chronic = 42, partial = TRUE,
+  extend = "none", extend_fill = "Extended"
 )
 
+prepared_data
 x <- prepared_data$data_wide
-summary(prepared_data)
+x <- summary(prepared_data)
+
+

@@ -21,14 +21,17 @@ prepare_nominal <- function(data,
   # Code chunk for dealing with R CMD check note
   entries <- NULL
   missing_day <- NULL
-  missing_entry <- NULL
+  missing_entries <- NULL
   level <- NULL
   proportion <- NULL
   estimator <- NULL
-  acute.missing_entry <- NULL
-  chronic.missing_entry <- NULL
+  extended_day <- NULL
+  acute.missing_entries <- NULL
+  chronic.missing_entries <- NULL
   acute.missing_day <- NULL
   chronic.missing_day <- NULL
+  acute.extended_day <- NULL
+  chronic.extended_day <- NULL
   start_date <- NULL
   stop_date <- NULL
   # +++++++++++++++++++++++++++++++++++++++++++
@@ -37,12 +40,6 @@ prepare_nominal <- function(data,
     message("Preparing data...")
   }
 
-  # Check if factor, then save levels
-  flag_value_factor <- FALSE
-  if (is.factor(data[[value]])) {
-    flag_value_factor <- TRUE
-    levels_value_factor <- levels(data[[value]])
-  }
 
   # Extract the data
   data <- data.frame(
@@ -54,8 +51,8 @@ prepare_nominal <- function(data,
   )
 
   # Fill missing entries
-  data$missing_entry <- is.na(data$value)
-  data$value[data$missing_entry] <- NA_session
+  data$missing_entries <- is.na(data$value)
+  data$value[data$missing_entries] <- NA_session
 
   # ------------------------------------
   data <- data %>%
@@ -88,11 +85,11 @@ prepare_nominal <- function(data,
     all = TRUE
   )
 
-  # Fill missing_entry that has NA values now
-  data$missing_entry <- ifelse(
-    is.na(data$missing_entry),
-    FALSE,
-    data$missing_entry
+  # Fill missing_entries that has NA values now
+  data$missing_entries <- ifelse(
+    is.na(data$missing_entries),
+    0,
+    data$missing_entries
   )
 
   data <- data %>%
@@ -102,7 +99,7 @@ prepare_nominal <- function(data,
     dplyr::arrange(date) %>%
     # Tag missing day
     dplyr::mutate(missing_day = is.na(start_date)) %>%
-    tidyr::fill(start_date, stop_date, .direction = "up")
+    tidyr::fill(start_date, stop_date, .direction = "updown")
 
   # Extend features
   if (extend == "none") {
@@ -120,12 +117,17 @@ prepare_nominal <- function(data,
 
   data <- data %>%
     dplyr::group_by(athlete, variable) %>%
+    # Mark extended days
+    dplyr::mutate(
+      extended_day = ifelse(date >= start_date & date <= stop_date, FALSE, TRUE),
+      extended_day = ifelse(is.na(extended_day), TRUE, extended_day),
+      value = ifelse(extended_day, extend_fill, value)
+    ) %>%
     dplyr::select(-start_date, -stop_date) %>%
     # Fill in missing days
-    dplyr::mutate(value = ifelse(missing_day, NA_day, value))
+    dplyr::mutate(value = ifelse(missing_day & !extended_day, NA_day, value))
 
   # ------------------
-  # browser()
   # Create wide version
   data <- data %>%
     dplyr::group_by(athlete, date, variable) %>%
@@ -134,7 +136,7 @@ prepare_nominal <- function(data,
       id_cols = c(
         "athlete", "date",
         "variable", "session",
-        "missing_entry", "missing_day"
+        "missing_entries", "missing_day", "extended_day"
       ),
       names_from = "value"
     )
@@ -144,20 +146,21 @@ prepare_nominal <- function(data,
     data$`NA` <- NULL
   }
 
-  data[-(1:6)] <- ifelse(is.na(data[-(1:6)]), 0, 1)
+  data[-(1:7)] <- ifelse(is.na(data[-(1:7)]), 0, 1)
 
   # Aggregate on a day level
   data <- tidyr::pivot_longer(
     data,
-    cols = -(1:6),
+    cols = -(1:7),
     names_to = "level"
   ) %>%
     dplyr::group_by(athlete, date, variable, level) %>%
     # Aggregate to day value
     dplyr::summarise(
       entries = dplyr::n(),
-      missing_entry = sum(missing_entry),
+      missing_entries = sum(missing_entries),
       missing_day = sum(missing_day),
+      extended_day = sum(extended_day),
       value = day_aggregate(value)
     )
 
@@ -230,7 +233,7 @@ prepare_nominal <- function(data,
   data <- data %>%
     dplyr::ungroup() %>%
     dplyr::select(-value) %>%
-    dplyr::relocate(athlete, date, variable, level, entries, missing_entry, missing_day) %>%
+    dplyr::relocate(athlete, date, variable, level, entries, missing_entries, missing_day, extended_day) %>%
     dplyr::arrange(athlete, date, variable, level)
 
   # Apply post-hoc estimators
@@ -239,7 +242,7 @@ prepare_nominal <- function(data,
   # Create long  version
   data_long <- tidyr::pivot_longer(
     data,
-    cols = -(1:7),
+    cols = -(1:8),
     names_to = "estimator",
     values_to = "value"
   )
@@ -275,21 +278,22 @@ prepare_nominal <- function(data,
   missing_summary_athlete <- data %>%
     dplyr::group_by(athlete, date, variable) %>%
     dplyr::summarise(
-      missing_entry = missing_entry[1],
-      missing_day = missing_day[1]
+      missing_entries = missing_entries[1],
+      missing_day = missing_day[1],
+      extended_day = extended_day[1]
     ) %>%
     dplyr::group_by(athlete, variable) %>%
     dplyr::mutate(
-      acute.missing_entry = zoo::rollapply(
-        missing_entry,
+      acute.missing_entries = zoo::rollapply(
+        missing_entries,
         FUN = sum,
         width = acute,
         partial = partial,
         fill = rolling_fill,
         align = "right"
       ),
-      chronic.missing_entry = zoo::rollapply(
-        missing_entry,
+      chronic.missing_entries = zoo::rollapply(
+        missing_entries,
         FUN = sum,
         width = chronic,
         partial = partial,
@@ -311,6 +315,22 @@ prepare_nominal <- function(data,
         partial = partial,
         fill = rolling_fill,
         align = "right"
+      ),
+      acute.extended_day = zoo::rollapply(
+        extended_day,
+        FUN = sum,
+        width = acute,
+        partial = partial,
+        fill = rolling_fill,
+        align = "right"
+      ),
+      chronic.extended_day = zoo::rollapply(
+        extended_day,
+        FUN = sum,
+        width = chronic,
+        partial = partial,
+        fill = rolling_fill,
+        align = "right"
       )
     ) %>%
     dplyr::ungroup()
@@ -318,32 +338,17 @@ prepare_nominal <- function(data,
   missing_summary_group <- missing_summary_athlete %>%
     dplyr::group_by(date, variable) %>%
     dplyr::summarise(
-      missing_entry = sum(missing_entry),
+      missing_entries = sum(missing_entries),
       missing_day = sum(missing_day),
-      acute.missing_entry = sum(acute.missing_entry),
-      chronic.missing_entry = sum(chronic.missing_entry),
+      extended_day = sum(extended_day),
+      acute.missing_entries = sum(acute.missing_entries),
+      chronic.missing_entries = sum(chronic.missing_entries),
       acute.missing_day = sum(acute.missing_day),
-      chronic.missing_day = sum(chronic.missing_day)
+      chronic.missing_day = sum(chronic.missing_day),
+      acute.extended_day = sum(acute.extended_day),
+      chronic.extended_day = sum(chronic.extended_day)
     ) %>%
     dplyr::ungroup()
-
-  # Return factor levels
-  if (flag_value_factor) {
-    data$level <- factor(
-      data$level,
-      levels = unique(c(levels_value_factor, unique(data$level)))
-    )
-
-    data_long$level <- factor(
-      data_long$level,
-      levels = unique(c(levels_value_factor, unique(data_long$level)))
-    )
-
-    group_summary$level <- factor(
-      group_summary$level,
-      levels = unique(c(levels_value_factor, unique(group_summary$level)))
-    )
-  }
 
   if (iter) {
     message("Done!")
