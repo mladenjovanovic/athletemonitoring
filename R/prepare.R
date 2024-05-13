@@ -27,6 +27,8 @@
 #'       for aligning end dates, and \code{"both"} for aligning both start and end days as well as variable
 #'       levels across athletes
 #' @param extend_fill What value should be imputed for the extended days? Default is \code{NA_day}
+#' @param start_date,stop_date Default \code{NULL} which means these are estimated from the \code{data},
+#'       otherwise using user defined values
 #' @param iter Should progress be shown? Default is \code{TRUE}
 #'
 #' @return Object of class \code{athletemonitoring}
@@ -372,6 +374,8 @@ prepare <- function(data,
                     },
                     extend = c("none", "start", "end", "both"),
                     extend_fill = NA_day,
+                    start_date = NULL,
+                    stop_date = NULL,
                     iter = TRUE) {
 
 
@@ -399,6 +403,8 @@ prepare <- function(data,
       group_summary_estimators = group_summary_estimators,
       extend = extend[[1]],
       extend_fill = extend_fill,
+      start_date = start_date,
+      stop_date = stop_date,
       iter = iter
     )
   } else {
@@ -432,6 +438,8 @@ prepare <- function(data,
       group_summary_estimators = group_summary_estimators,
       extend = extend[[1]],
       extend_fill = extend_fill,
+      start_date = start_date,
+      stop_date = stop_date,
       iter = iter
     )
   }

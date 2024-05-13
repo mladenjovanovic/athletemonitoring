@@ -34,6 +34,8 @@ prepare(
  },
   extend = c("none", "start", "end", "both"),
   extend_fill = NA_day,
+  start_date = NULL,
+  stop_date = NULL,
   iter = TRUE
 )
 }
@@ -78,6 +80,9 @@ for aligning end dates, and \code{"both"} for aligning both start and end days a
 levels across athletes}
 
 \item{extend_fill}{What value should be imputed for the extended days? Default is \code{NA_day}}
+
+\item{start_date, stop_date}{Default \code{NULL} which means these are estimated from the \code{data},
+otherwise using user defined values}
 
 \item{iter}{Should progress be shown? Default is \code{TRUE}}
 }

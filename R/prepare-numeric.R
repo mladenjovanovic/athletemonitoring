@@ -15,6 +15,8 @@ prepare_numeric <- function(data,
                             group_summary_estimators,
                             extend,
                             extend_fill,
+                            start_date,
+                            stop_date,
                             iter) {
 
   # +++++++++++++++++++++++++++++++++++++++++++
@@ -31,8 +33,6 @@ prepare_numeric <- function(data,
   chronic.extended_day <- NULL
   acute.extended_day <- NULL
   chronic.missing_day <- NULL
-  start_date <- NULL
-  stop_date <- NULL
   # +++++++++++++++++++++++++++++++++++++++++++
 
   if (iter) {
@@ -69,8 +69,17 @@ prepare_numeric <- function(data,
     )
 
   # Get the overall start and stop date to impute missing days
-  overall_start_date <- min(data$date)
-  overall_stop_date <- max(data$date)
+  if (is.null(start_date)) {
+    overall_start_date <- min(data$date)
+  } else {
+    overall_start_date <- start_date
+  }
+
+  if (is.null(stop_date)) {
+    overall_stop_date <- max(data$date)
+  } else {
+    overall_stop_date <- stop_date
+  }
 
   # Create a sequence of day
   if (is.numeric(data$date)) {
@@ -79,16 +88,15 @@ prepare_numeric <- function(data,
     date_seq <- seq(overall_start_date, overall_stop_date, "days")
   }
 
-
   # Generate a continuous df so that there are no missing days for every athlete
-  data <- merge(
-    data,
+  data <- dplyr::left_join(
     expand.grid(
-      date = date_seq,
       athlete = unique(data$athlete),
+      date = date_seq,
       variable = unique(data$variable)
     ),
-    all = TRUE
+    data,
+    by = c("athlete", "date", "variable")
   )
 
   # Fill missing_entries that has NA values now
